@@ -109,6 +109,7 @@ ANATHOMY = {
         'WikiPostId': 'INTEGER'
     }
 }
+anathomy is the so data json schema,the parse from xml is base on this
 """
 ANATHOMY = {
     'comments': {
