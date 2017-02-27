@@ -1,3 +1,4 @@
 .idea/
 SOKnowledge/tagger/data/
 SOKnowledge/tagger/models/
+/SOKnowledge/dataProcessor/data/
