@@ -1,11 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sqlite3
-import os
-import xml.etree.cElementTree as etree
 import logging
+import os
+import sqlite3
+import xml.etree.cElementTree as etree
 
-ANATHOMY = {
+import fire
+
+XML_ANATOMY = {
     'badges': {
         'Id': 'INTEGER',
         'UserId': 'INTEGER',
@@ -112,7 +114,7 @@ ANATHOMY = {
 
 
 def dump_files(file_names,
-               anathomy,
+               anatomy,
                xml_file_path='.',
                dump_path='.',
                dump_database_name='so-dump.db',
@@ -131,7 +133,7 @@ def dump_files(file_names,
 
             sql_create = create_query.format(
                 table=table_name,
-                fields=", ".join(['{0} {1}'.format(name, type) for name, type in anathomy[table_name].items()]))
+                fields=", ".join(['{0} {1}'.format(name, type) for name, type in anatomy[table_name].items()]))
             print('Creating table {0}'.format(table_name))
 
             try:
@@ -165,7 +167,16 @@ def parse_xml_db(xml_file_names,
                  dump_path=".",
                  dump_database_name='so-dump.db',
                  log_filename='so-parser.log'):
-    legal_file_names = ANATHOMY.keys()
+    """
+    :param xml_file_names: the name of the xml files without file type suffix,such as post,tags,votes,
+    if there are more than one, connect the name with ',',ect,[tags,posts]
+    :param xml_file_path: the path of the xmls file dir
+    :param dump_path: the path of the database file name
+    :param dump_database_name: the name of the database file name,must end with .db.default:so-dump.db
+    :param log_filename: the name of the parse log file.default:so-parser.log
+    :return:
+    """
+    legal_file_names = XML_ANATOMY.keys()
 
     for file_name in xml_file_names:
         if file_name not in legal_file_names:
@@ -173,49 +184,8 @@ def parse_xml_db(xml_file_names,
             print 'following are the legal file name:\n',
             print legal_file_names
             return
-    dump_files(xml_file_names, ANATHOMY, xml_file_path, dump_path, dump_database_name, log_filename)
-
-
-def usage():
-    usageStr = {
-        "-h": "show the usage",
-        "--xmlpath": "the path of the xmls file dir",
-        "--xmlnames": "the name of the xml files without file type suffix,such as post,tags,votes,if there are more than one,connect the name with ','",
-        "--logname": "the name of the parse log file.default:so-parser.log",
-        "--dbname": "the name of the database file name,must end with .db.default:so-dump.db",
-        "--dbpath": "the path of the database file name",
-    }
-    team = "\n".join(['{0}  :{1}'.format(command, description) for command, description in usageStr.items()])
-    print(team)
+    dump_files(xml_file_names, XML_ANATOMY, xml_file_path, dump_path, dump_database_name, log_filename)
 
 
 if __name__ == '__main__':
-    import sys, getopt
-
-    opts, args = getopt.getopt(sys.argv[1:], "h", ["xmlnames=", "logname=", "dbname=", "xmlpath=", "dbpath="])
-
-    xml_file_names = []
-    dump_path = "."
-    dump_database_name = 'so-dump.db'
-    log_filename = 'so-parser.log'
-    xml_path = "."
-    for op, value in opts:
-        if op == "--xmlnames":
-            xml_file_names = value.split(',')
-        elif op == "--dbpath":
-            dump_path = value
-        elif op == "--dbname":
-            dump_database_name = value
-        elif op == "--xmlpath":
-            xml_path = value
-        elif op == "--logname":
-            log_filename = value
-        elif op == "-h":
-            usage()
-            sys.exit()
-
-    if len(xml_file_names) > 0:
-        print xml_file_names
-        parse_xml_db(xml_file_names)
-    else:
-        print "xml file names are not setted"
+    fire.Fire(parse_xml_db)
