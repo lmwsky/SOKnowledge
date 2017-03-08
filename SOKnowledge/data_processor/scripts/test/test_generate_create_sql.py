@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from SOKnowledge.data_processor.scripts.finish.sql_util import generate_create_sql, generate_insert_sql
 
 
 class TestGenerate_create_sql(TestCase):

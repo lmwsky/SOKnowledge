@@ -1,5 +1,6 @@
 .idea/
 SOKnowledge/tagger/data/
 SOKnowledge/tagger/models/
-/SOKnowledge/dataProcessor/data/
-/SOKnowledge/dataProcessor/scripts/test/
+/SOKnowledge/data_processor/data/
+/SOKnowledge/data_processor/scripts/test/
+
