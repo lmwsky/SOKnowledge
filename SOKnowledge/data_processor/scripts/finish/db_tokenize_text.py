@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import fire
 
-from SOKnowledge.data_processor.scripts.finish.db_util import process_table_data
-from SOKnowledge.data_processor.scripts.finish.nlp_util import word_tokenize_nltk
-from SOKnowledge.data_processor.scripts.finish.sql_util import generate_create_sql_for_tokenize_text, \
+from db_util import process_table_data
+from nlp_util import word_tokenize_nltk
+from sql_util import generate_create_sql_for_tokenize_text, \
     generate_insert_sql_for_tokenize_text
 
 

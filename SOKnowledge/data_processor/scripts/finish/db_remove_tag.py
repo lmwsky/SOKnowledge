@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import fire
 
-from SOKnowledge.data_processor.scripts.finish.anatomy import TABLE_NAMES
-from SOKnowledge.data_processor.scripts.finish.db_util import process_table_data
-from SOKnowledge.data_processor.scripts.finish.sql_util import generate_insert_sql_for_table, \
+from anatomy import TABLE_NAMES
+from db_util import process_table_data
+from sql_util import generate_insert_sql_for_table, \
     generate_create_sql_for_table
 from SOKnowledge.data_processor.scripts.finish.text_processor import remove_tags
 

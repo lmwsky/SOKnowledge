@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import fire
 
-from SOKnowledge.data_processor.scripts.finish.anatomy import search_table_anatomy, TABLE_NAMES
+from anatomy import search_table_anatomy, TABLE_NAMES
 
 
 def generate_create_sql_for_anatomy(anatomy):
