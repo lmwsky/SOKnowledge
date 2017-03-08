@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import os
+
 import fire
 import nltk
 
@@ -23,10 +25,15 @@ def word_tokenize_standford_nlp(text):
     :return: ['I', "am", 'a', 'person', '.', 'And', 'I', 'am', 'happy','.']
     """
 
+    dir_path=".\stanford_nlp_jar"
+    jar_name="stanford-parser.jar"
+
     word_tokens = []
-    tokenizer = nltk.tokenize.StanfordTokenizer(path_to_jar=r"E:\tools\stanfordNLTK\jar\stanford-parser.jar")
+    from standford_nlp_wrapper import StanfordDocumentPreprocessor
+    tokenizer = StanfordDocumentPreprocessor(path_to_jar=os.path.join(dir_path, jar_name))
     if text:
         word_tokens = tokenizer.tokenize(text)
+        print word_tokens
     return word_tokens
 
 
@@ -73,4 +80,4 @@ class DocumentPreProcessor(object):
 
 
 if __name__ == '__main__':
-    fire.Fire(DocumentPreProcessor)
+    fire.Fire(word_tokenize_nltk)
