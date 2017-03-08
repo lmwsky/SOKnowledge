@@ -71,6 +71,7 @@ def process_table_data(
             for sql, values in sql_batch_input_dict.items():
                 execute_batch(dump_full_path, sql, values)
         if db:
+            db.commit()
             db.close()
 
     except Exception, error:

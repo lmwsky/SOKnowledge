@@ -32,7 +32,7 @@ def cursor_process_tokenize_text_specific_param(cursor, source_table_name, token
     tokenize_table_name = generate_tokenize_table_name(source_table_name, tokenize_col_name)
     sql_values_dict = {}
     row_values = []
-    for row in cursor:
+    for row in cursor.fetchall():
         new_tokenize_row_value = row_process_tokenize_text(row, tokenize_col_name, primary_key_name)
         row_values.append(new_tokenize_row_value)
 

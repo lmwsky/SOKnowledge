@@ -6,17 +6,17 @@ from anatomy import TABLE_NAMES
 from db_util import process_table_data
 from sql_util import generate_insert_sql_for_table, \
     generate_create_sql_for_table
-from SOKnowledge.data_processor.scripts.finish.text_processor import remove_tags
+from text_processor import remove_tags
 
 
 def cursor_process_remove_tag_for_posts(cursor, process_func_extra_params=None):
     sql_values_dict = {}
     post_row_values = []
     all_code_blocks = []
-    for row in cursor:
-        [new_posts_row_value, code_blocks] = row_process_remove_tag_for_posts(row)
+    for row in cursor.fetchall():
+        new_posts_row_value, code_blocks = row_process_remove_tag_for_posts(row)
         post_row_values.append(new_posts_row_value)
-        all_code_blocks = all_code_blocks + code_blocks
+        all_code_blocks += code_blocks
 
     create_sql_list = [generate_create_sql_for_table(TABLE_NAMES.REMOVE_TAG_POSTS_BODY),
                        generate_create_sql_for_table(TABLE_NAMES.POSTS_CODE_BLOCK)]
@@ -46,7 +46,7 @@ def row_process_remove_tag_for_posts(row):
 
 
 def db_remove_tags_for_posts(
-        dump_path='.',
+        dump_path='D:\work\laboratory\so_data',
         dump_database_name='so-dump.db',
         log_filename='so-parser.log',
 ):
