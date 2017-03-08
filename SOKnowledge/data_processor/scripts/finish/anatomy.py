@@ -3,7 +3,7 @@
 """
 the structure of the stackOverflow table,
 """
-from SOKnowledge.data_processor import const
+import const
 
 ANATOMY = {
     'posts_code_block': {
