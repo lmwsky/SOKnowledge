@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import fire
 
 from SOKnowledge.data_processor.scripts.finish.anatomy import TABLE_NAMES
