@@ -51,7 +51,7 @@ def db_remove_tags_for_posts(
         dump_path='D:\work\laboratory\so_data',
         dump_database_name='so-dump.db',
         log_filename='so-parser.log',
-        step=50,
+        step=500000 ,
 ):
     max_id = get_max_id(dump_path, dump_database_name, TABLE_NAMES.POSTS, primary_key_name='Id')
     select_query = "SELECT * FROM {table}"
