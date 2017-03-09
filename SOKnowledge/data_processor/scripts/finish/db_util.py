@@ -61,6 +61,7 @@ def process_table_data(
         logging.basicConfig(filename=os.path.join(dump_path, log_filename), level=logging.INFO)
         dump_full_path = os.path.join(dump_path, dump_database_name)
         db = sqlite3.connect(dump_full_path)
+        db.row_factory = sqlite3.Row
         query = select_query.format(table=table_name)
         cursor = db.execute(query)
         if cursor:
