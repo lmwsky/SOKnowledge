@@ -20,10 +20,16 @@ def generate_create_sql_for_anatomy(anatomy):
 def generate_insert_sql_for_anatomy(anatomy):
     insert_query = 'INSERT INTO {table} ({columns}) VALUES ({values})'
 
+    fields = ', '.join([field_name for field_name in anatomy['normal_field'].keys()])
+    field__keys_ = ('?, ' * len(anatomy['normal_field'].keys()))[:-2]
+
+    if anatomy['primary_key_name'] and not anatomy['autoincrement']:
+        fields = "{0}, {1}".format(anatomy['primary_key_name'], fields)
+        field__keys_ += ', ?'
     return insert_query.format(
         table=anatomy['table_name'],
-        columns=', '.join([field_name for field_name in anatomy['normal_field'].keys()]),
-        values=('?, ' * len(anatomy['normal_field'].keys()))[:-2])
+        columns=fields,
+        values=field__keys_)
 
 
 def generate_insert_sql_for_table(table_name):

@@ -80,4 +80,4 @@ class DocumentPreProcessor(object):
 
 
 if __name__ == '__main__':
-    fire.Fire(word_tokenize_nltk)
+    fire.Fire(word_tokenize_standford_nlp)

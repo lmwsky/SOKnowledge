@@ -9,11 +9,11 @@ ANATOMY = {
     'posts_code_block': {
         'table_name': 'posts_code_block',
         'normal_field': {
-            'ParentId': 'INTEGER',
             'codeBlockName': 'TEXT',
             'codeBlock': 'TEXT',
-            'type': 'INTEGER'
-        },
+            'type': 'INTEGER',
+             'ParentId': 'INTEGER'
+},
         'primary_key_name': 'id',
         'primary_key_type': 'INTEGER',
         'autoincrement': True
