@@ -3,7 +3,7 @@
 import fire
 
 from db_util import process_table_data
-from nlp_util import word_tokenize_nltk
+from nlp_util import sent_word_tokenize_nltk
 from sql_util import generate_create_sql_for_tokenize_text, \
     generate_insert_sql_for_tokenize_text
 
@@ -32,6 +32,7 @@ def cursor_process_tokenize_text_specific_param(cursor, source_table_name, token
     tokenize_table_name = generate_tokenize_table_name(source_table_name, tokenize_col_name)
     sql_values_dict = {}
     row_values = []
+
     for row in cursor.fetchall():
         new_tokenize_row_value = row_process_tokenize_text(row, tokenize_col_name, primary_key_name)
         row_values.append(new_tokenize_row_value)
@@ -43,7 +44,7 @@ def cursor_process_tokenize_text_specific_param(cursor, source_table_name, token
 
 
 def row_process_tokenize_text(row, tokenize_col_name, primary_key_name="Id",
-                              word_tokenize_func=word_tokenize_nltk):
+                              word_tokenize_func=sent_word_tokenize_nltk):
     body = row[tokenize_col_name]
     id = row[primary_key_name]
     new_row_value = [id, word_tokenize_func(body)]

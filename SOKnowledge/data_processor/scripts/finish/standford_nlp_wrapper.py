@@ -35,7 +35,12 @@ class StanfordDocumentPreprocessor(TokenizerI):
 
     _JAR = 'stanford-postagger.jar'
 
-    def __init__(self, path_to_jar=None, encoding='utf8', options=None, verbose=False, java_options='-mx1000m'):
+    DIR_PATH = ".\stanford_nlp_jar"
+    JAR_NAME = "stanford-parser.jar"
+    JAR_FULL_PATH = os.path.join(DIR_PATH, JAR_NAME)
+
+    def __init__(self, path_to_jar=JAR_FULL_PATH, encoding='utf8', options=None, verbose=False,
+                 java_options='-mx1000m'):
         if options is None:
             options = {"ptb3Escaping": 'false'}
         self._stanford_jar = find_jar(

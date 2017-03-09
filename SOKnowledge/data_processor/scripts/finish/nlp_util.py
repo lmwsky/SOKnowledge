@@ -1,9 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
 
 import fire
 import nltk
+
+from standford_nlp_wrapper import StanfordDocumentPreprocessor
+
+REPLACE_CHAR_DIC = {
+    '-LRB-': '(',
+    '-RRB-': ')',
+    '-LSB-': '[',
+    '-RSB-': ']',
+    '-LCB-': '{',
+    '-RCB-': '}',
+}
 
 
 def word_tokenize_nltk(text):
@@ -18,23 +28,24 @@ def word_tokenize_nltk(text):
     return word_tokens
 
 
-def word_tokenize_standford_nlp(text):
+def sent_tokenize_standford_nlp(text, tokenizer=None):
     """
     parse a piece of text into word tokens,a wrap for StanfordNLP word_tokennize function
+    :param tokenizer: the tokenizer for text,tokenizer = StanfordDocumentPreprocessor()
     :param text: the text need to splitted into tokens,ect."I am a person.And I am happy."
     :return: ['I', "am", 'a', 'person', '.', 'And', 'I', 'am', 'happy','.']
     """
+    sent_list = []
 
-    dir_path=".\stanford_nlp_jar"
-    jar_name="stanford-parser.jar"
-
-    word_tokens = []
-    from standford_nlp_wrapper import StanfordDocumentPreprocessor
-    tokenizer = StanfordDocumentPreprocessor(path_to_jar=os.path.join(dir_path, jar_name))
     if text:
-        word_tokens = tokenizer.tokenize(text)
-        print word_tokens
-    return word_tokens
+        if tokenizer is None:
+            tokenizer = StanfordDocumentPreprocessor()
+        sent_list = tokenizer.tokenize(text)
+
+    clean_text = "\n".join(sent_list)
+    for old_char, new_char in REPLACE_CHAR_DIC.items():
+        clean_text = clean_text.replace(old_char, new_char)
+    return sent_tokenize_nltk(clean_text)
 
 
 def sent_tokenize_nltk(text):
@@ -47,6 +58,20 @@ def sent_tokenize_nltk(text):
     if text:
         sents = nltk.tokenize.sent_tokenize(text)
     return sents
+
+
+def sent_word_tokenize_nltk(text):
+    """
+    parse a piece of text into sentences,a wrap for nltk sent_tokenize function
+    :param text: the text need to splitted into tokens,ect."I am a person.And I am happy."
+    :return: ['I am a person.","And I am happy.']
+    """
+    sents = []
+    if text:
+        untokenize_sents = nltk.tokenize.sent_tokenize(text)
+        for sent in untokenize_sents:
+            sents.append(" ".join(nltk.tokenize.word_tokenize(sent)))
+    return "\n".join(sents)
 
 
 class DocumentPreProcessor(object):
@@ -80,4 +105,4 @@ class DocumentPreProcessor(object):
 
 
 if __name__ == '__main__':
-    fire.Fire(word_tokenize_standford_nlp)
+    fire.Fire(sent_word_tokenize_nltk)
