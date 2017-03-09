@@ -1,3 +1,5 @@
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Django settings for SOKnowledge project.
 
@@ -77,7 +79,7 @@ WSGI_APPLICATION = 'SOKnowledge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'so-dump.db'),
+        'NAME': os.path.join(BASE_DIR, 'SOKnowledge\db', 'so-dump.db'),
     }
 }
 
@@ -119,3 +121,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+if __name__ == '__main__':
+    print os.path.abspath(DATABASES['default']['NAME'])
