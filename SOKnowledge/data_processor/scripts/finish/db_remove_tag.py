@@ -37,9 +37,9 @@ def row_process_remove_tag_for_posts(row):
 
     new_posts_row_value = [id, result_dict['cleanText']]
 
-    large_code_block = [[id,1,code_block_name, code_block] for code_block_name, code_block in
+    large_code_block = [[id, 1, code_block_name, code_block] for code_block_name, code_block in
                         result_dict['largeCodeDict'].items()]
-    small_code_block = [[id,0,code_block_name, code_block] for code_block_name, code_block in
+    small_code_block = [[id, 0, code_block_name, code_block] for code_block_name, code_block in
                         result_dict['smallCodeDict'].items()]
 
     code_blocks = large_code_block + small_code_block
@@ -48,17 +48,19 @@ def row_process_remove_tag_for_posts(row):
 
 
 def db_remove_tags_for_posts(
-        dump_path='D:\work\laboratory\so_data',
+        dump_path='.',
         dump_database_name='so-dump.db',
         log_filename='so-parser.log',
-        step=500000 ,
+        step=500000,
+        max_id=None,
 ):
-    max_id = get_max_id(dump_path, dump_database_name, TABLE_NAMES.POSTS, primary_key_name='Id')
+    if max_id is None:
+        max_id = get_max_id(dump_path, dump_database_name, TABLE_NAMES.POSTS, primary_key_name='Id')
     select_query = "SELECT * FROM {table}"
-    condition_clause=" where Id>{startId} AND Id<={endId}"
+    condition_clause = " where Id>{startId} AND Id<={endId}"
     for startId in range(0, max_id, step):
         endId = min(startId + step, max_id)
-        sql = select_query+condition_clause.format(startId=startId, endId=endId)
+        sql = select_query + condition_clause.format(startId=startId, endId=endId)
         process_table_data(TABLE_NAMES.POSTS,
                            cursor_process_remove_tag_for_posts,
                            dump_path,
