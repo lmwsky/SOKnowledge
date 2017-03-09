@@ -4,3 +4,6 @@ SOKnowledge/tagger/models/
 /SOKnowledge/data_processor/data/
 /SOKnowledge/data_processor/scripts/test/
 
+*.db
+*.pyc
+
