@@ -6,31 +6,49 @@ import sqlite3
 import fire
 
 
-def query_code_block_dict(id,
+def generate_select_code_block_sql(code_block_table_name, parent_id, type=None):
+    if type:
+        return "SELECT * FROM {table} where ParentId={id} AND type={type}".format(table=code_block_table_name,
+                                                                                  id=parent_id, type=type)
+    else:
+        return "SELECT * FROM {table} where ParentId={id}".format(table=code_block_table_name,
+                                                                  id=parent_id)
+
+
+def query_code_block_dict(parent_id,
                           code_block_table_name,
-                          db_connection=None,
+                          type=None,
                           dump_path='.',
                           dump_database_name='so-dump.db',
-                          select_query="SELECT * FROM {table} where ParentId={id}"):
+                          db_connection=None,
+                          ):
+    is_create_db_connection = False
+    cursor = None
     try:
         if db_connection is None:
             dump_full_path = os.path.join(dump_path, dump_database_name)
             db_connection = sqlite3.connect(dump_full_path)
             db_connection.row_factory = sqlite3.Row
+            is_create_db_connection = True
         cursor = db_connection.cursor()
-        sql = select_query.format(table=code_block_table_name, id=id)
+        sql = generate_select_code_block_sql(code_block_table_name, parent_id, type)
         cursor = cursor.execute(sql)
-        print sql
         code_block_dict = {}
         for row in cursor.fetchall():
             codeBlockName = row['codeBlockName']
             code_block_dict[codeBlockName] = row['codeBlock']
-        cursor.close()
-        db_connection.close()
         return code_block_dict
     except Exception, e:
         print e
+    finally:
+        if cursor:
+            cursor.close()
+        if is_create_db_connection:
+            db_connection.close()
 
+def row_join_code_block_into_text(
+                                 ):
+    pass
 
 def join_code_block_into_text(text, code_block_dict=None):
     """
