@@ -77,10 +77,8 @@ ANATOMY = {
 
 TABLE_NAMES = const.Const()
 TABLE_NAMES.POSTS = 'posts'
-TABLE_NAMES.POSTS_CODE_BLOCK = 'posts_code_block'
 TABLE_NAMES.REMOVE_TAG_POSTS_BODY = 'remove_tag_posts_body'
-TABLE_NAMES.TOKENIZE_REMOVE_TAG_POSTS_BODY = 'tokenize_remove_tag_posts_body'
-TABLE_NAMES.TOKENIZE_TABLE_NORMAL_FORM = 'tokenize_text_table'
+TABLE_NAMES.TOKENIZE_REMOVE_TAG_POSTS_BODY = 'tokenize_RemoveTagBody_for_remove_tag_posts_body'
 TABLE_NAMES.CODE_BLOCK_WITH_TOKENIZE_CODE = 'code_block_with_tokenize_code'
 
 

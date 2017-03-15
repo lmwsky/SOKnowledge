@@ -3,14 +3,15 @@
 
 import fire
 
-from anatomy import CODE_BLOCK_TYPE, CODE_BLOCK_QUERY_TYPE
+from anatomy import CODE_BLOCK_TYPE, CODE_BLOCK_QUERY_TYPE, TABLE_NAMES
 from db_util import build_connect_to_sqlite_with_row_factory
 from sql_util import get_query_code_block_sql
 
 
 def query_code_block_dict(parent_id,
-                          code_block_table_name,
+                          code_block_table_name=TABLE_NAMES.CODE_BLOCK_WITH_TOKENIZE_CODE,
                           code_block_type=CODE_BLOCK_TYPE.ALL,
+                          code_block_text_col_name="tokenize_text",
                           db_connection=None,
                           dump_path='.',
                           dump_database_name='so-dump.db'):
@@ -19,7 +20,7 @@ def query_code_block_dict(parent_id,
     try:
         if db_connection is None:
             is_new_connection = True
-            db_connection = build_connect_to_sqlite_with_row_factory(db_connection, dump_database_name, dump_path)
+            db_connection = build_connect_to_sqlite_with_row_factory(dump_path, dump_database_name)
         cursor = db_connection.cursor()
 
         sql = get_query_code_block_sql(code_block_table_name, parent_id, code_block_type)
@@ -28,7 +29,7 @@ def query_code_block_dict(parent_id,
         code_block_dict = {}
         for row in cursor.fetchall():
             code_block_name = row['codeBlockName']
-            code_block_dict[code_block_name] = row['codeBlock']
+            code_block_dict[code_block_name] = row[code_block_text_col_name]
         return code_block_dict
     except Exception, e:
         print e
@@ -52,14 +53,15 @@ def join_code_block_into_text(text, code_block_dict=None):
     if text:
         for code_block_name, code_block in code_block_dict.items():
             text = text.replace(code_block_name, code_block)
+        return text
     else:
         return ""
 
 
 def get_post_text(post_id,
-                  post_text_table_name,
-                  post_text_col_name,
-                  code_block_table_name,
+                  post_text_table_name=TABLE_NAMES.TOKENIZE_REMOVE_TAG_POSTS_BODY,
+                  post_text_col_name="tokenize_text",
+                  code_block_table_name=TABLE_NAMES.CODE_BLOCK_WITH_TOKENIZE_CODE,
                   code_block_select_mode=CODE_BLOCK_QUERY_TYPE.FULL,
                   post_text_table_primary_key_name="Id",
                   db_connection=None,
@@ -78,9 +80,9 @@ def get_post_text(post_id,
 
 
 def get_post_no_code_body_text_and_code_block(post_id,
-                                              post_text_table_name,
-                                              post_text_col_name,
-                                              code_block_table_name,
+                                              post_text_table_name=TABLE_NAMES.TOKENIZE_REMOVE_TAG_POSTS_BODY,
+                                              post_text_col_name="tokenize_text",
+                                              code_block_table_name=TABLE_NAMES.CODE_BLOCK_WITH_TOKENIZE_CODE,
                                               code_block_select_mode=CODE_BLOCK_QUERY_TYPE.FULL,
                                               post_text_table_primary_key_name="Id",
                                               db_connection=None,
@@ -93,22 +95,21 @@ def get_post_no_code_body_text_and_code_block(post_id,
     if code_block_select_mode == CODE_BLOCK_QUERY_TYPE.NONE:
         return post_body_text, {}
     if code_block_select_mode == CODE_BLOCK_QUERY_TYPE.HALF:
-        from db_remove_tag import CODE_BLOCK_TYPE_SMALL
         code_block_dict = query_code_block_dict(post_id,
                                                 code_block_table_name,
-                                                CODE_BLOCK_TYPE_SMALL,
-                                                db_connection,
-                                                dump_path,
-                                                dump_database_name)
+                                                CODE_BLOCK_TYPE.SMALL,
+                                                db_connection=db_connection,
+                                                dump_path=dump_path,
+                                                dump_database_name=dump_database_name)
         return post_body_text, code_block_dict
 
     if code_block_select_mode == CODE_BLOCK_QUERY_TYPE.FULL:
         code_block_dict = query_code_block_dict(post_id,
                                                 code_block_table_name,
                                                 CODE_BLOCK_TYPE.ALL,
-                                                db_connection,
-                                                dump_path,
-                                                dump_database_name)
+                                                db_connection=db_connection,
+                                                dump_path=dump_path,
+                                                dump_database_name=dump_database_name)
         return post_body_text, code_block_dict
 
 
@@ -125,15 +126,14 @@ def get_one_row_col_value_from_db(
     try:
         if db_connection is None:
             is_new_connection = True
-            db_connection = build_connect_to_sqlite_with_row_factory(dump_database_name, dump_path)
+            db_connection = build_connect_to_sqlite_with_row_factory(dump_path, dump_database_name)
         select_query = 'SELECT * FROM {table} WHERE {primary_key_name}={primary_key_value}'
         select_sql = select_query.format(table=table_name,
                                          primary_key_name=primary_key_name, primary_key_value=primary_key_value)
-        print select_sql
         cursor = db_connection.cursor()
         cursor = cursor.execute(select_sql)
-        row = cursor.fetchone()
 
+        row = cursor.fetchone()
         if row:
             return row[col_name]
         else:
@@ -150,4 +150,4 @@ def get_one_row_col_value_from_db(
 
 
 if __name__ == '__main__':
-    fire.Fire(query_code_block_dict)
+    fire.Fire(get_post_text)
