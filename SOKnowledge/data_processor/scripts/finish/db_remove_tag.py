@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 import fire
 
-from anatomy import TABLE_NAMES
+from anatomy import TABLE_NAMES, CODE_BLOCK_TYPE
 from db_util import process_table_data, get_max_id
-from sql_util import generate_insert_sql_for_table, \
-    generate_create_sql_for_table
+from sql_util import generate_insert_sql_for_table, generate_create_sql_for_table
 from text_processor import remove_tags
 
 
@@ -37,9 +36,9 @@ def row_process_remove_tag_for_posts(row):
 
     new_posts_row_value = [id, result_dict['cleanText']]
 
-    large_code_block = [[id, 1, code_block_name, code_block] for code_block_name, code_block in
+    large_code_block = [[id, CODE_BLOCK_TYPE.LARGE, code_block_name, code_block] for code_block_name, code_block in
                         result_dict['largeCodeDict'].items()]
-    small_code_block = [[id, 0, code_block_name, code_block] for code_block_name, code_block in
+    small_code_block = [[id, CODE_BLOCK_TYPE.SMALL, code_block_name, code_block] for code_block_name, code_block in
                         result_dict['smallCodeDict'].items()]
 
     code_blocks = large_code_block + small_code_block
@@ -48,11 +47,11 @@ def row_process_remove_tag_for_posts(row):
 
 
 def db_remove_tags_for_posts(
-        dump_path='.',
-        dump_database_name='so-dump.db',
-        log_filename='so-parser.log',
         step=500000,
         max_id=None,
+        dump_path='.',
+        dump_database_name='so-dump.db',
+        log_filename='so-parser.log'
 ):
     if max_id is None:
         max_id = get_max_id(dump_path, dump_database_name, TABLE_NAMES.POSTS, primary_key_name='Id')

@@ -12,8 +12,8 @@ ANATOMY = {
             'codeBlockName': 'TEXT',
             'codeBlock': 'TEXT',
             'type': 'INTEGER',
-             'ParentId': 'INTEGER'
-},
+            'ParentId': 'INTEGER'
+        },
         'primary_key_name': 'id',
         'primary_key_type': 'INTEGER',
         'autoincrement': True
@@ -81,6 +81,19 @@ TABLE_NAMES.POSTS_CODE_BLOCK = 'posts_code_block'
 TABLE_NAMES.REMOVE_TAG_POSTS_BODY = 'remove_tag_posts_body'
 TABLE_NAMES.TOKENIZE_REMOVE_TAG_POSTS_BODY = 'tokenize_remove_tag_posts_body'
 TABLE_NAMES.TOKENIZE_TABLE_NORMAL_FORM = 'tokenize_text_table'
+TABLE_NAMES.CODE_BLOCK_WITH_TOKENIZE_CODE = 'code_block_with_tokenize_code'
+
+
+CODE_BLOCK_TYPE = const.Const()
+CODE_BLOCK_TYPE.LARGE = 1
+CODE_BLOCK_TYPE.SMALL = 0
+CODE_BLOCK_TYPE.ALL = -1
+
+CODE_BLOCK_QUERY_TYPE = const.Const()
+
+CODE_BLOCK_QUERY_TYPE.NONE = 1
+CODE_BLOCK_QUERY_TYPE.HALF = 2
+CODE_BLOCK_QUERY_TYPE.FULL = 3
 
 
 def search_table_anatomy(table_name):

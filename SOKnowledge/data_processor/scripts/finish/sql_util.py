@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import fire
 
-from anatomy import search_table_anatomy, TABLE_NAMES
+
+from anatomy import search_table_anatomy, TABLE_NAMES, CODE_BLOCK_TYPE
 
 
 def generate_create_sql_for_anatomy(anatomy):
@@ -63,3 +64,12 @@ def generate_insert_sql_for_tokenize_text(table_name):
 
 if __name__ == '__main__':
     fire.Fire()
+
+
+def get_query_code_block_sql(code_block_table, parent_id, code_block_type):
+    if code_block_type == CODE_BLOCK_TYPE.SMALL or code_block_type == CODE_BLOCK_TYPE.LARGE:
+        select_query = "SELECT * FROM {table} where ParentId={ParentId} and type={type}"
+        return select_query.format(table=code_block_table, ParentId=parent_id, type=code_block_type)
+    else:
+        select_query = "SELECT * FROM {table} where ParentId={ParentId}"
+        return select_query.format(table=code_block_table, ParentId=parent_id)

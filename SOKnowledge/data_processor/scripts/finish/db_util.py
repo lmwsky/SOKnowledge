@@ -78,3 +78,10 @@ def process_table_data(
     except Exception, error:
         logging.warning(error)
         print error
+
+
+def build_connect_to_sqlite_with_row_factory(dump_database_name, dump_path):
+    dump_full_path = os.path.join(dump_path, dump_database_name)
+    db_connection = sqlite3.connect(dump_full_path)
+    db_connection.row_factory = sqlite3.Row
+    return db_connection
