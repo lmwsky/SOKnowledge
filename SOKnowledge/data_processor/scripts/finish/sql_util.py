@@ -2,8 +2,19 @@
 # -*- coding: utf-8 -*-
 import fire
 
-
 from anatomy import search_table_anatomy, TABLE_NAMES, CODE_BLOCK_TYPE
+
+
+def generate_select_question_id_list(min_id=None, max_id=None):
+    sql = "SELECT Id FROM {table} WHERE ".format(table=TABLE_NAMES.POSTS)
+    condition_list = []
+    if max_id:
+        condition_list.append("Id<={max_id}".format(max_id=max_id))
+    if min_id:
+        condition_list.append("Id>{min_id}".format(min_id=min_id))
+    if min_id:
+        condition_list.append("PostTypeId=1")
+    return sql + " AND ".join(condition_list)
 
 
 def generate_create_sql_for_anatomy(anatomy):
