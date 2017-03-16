@@ -32,3 +32,9 @@ and drop posts_code_block
 ```
 python db_join_tokenize_code_with_old_table.py E:\laboratory\StackOverflow\SOKnowledge\SOKnowledge\db
 ```
+
+## 6. export training corpus for word2vec
+
+```
+python db_export_word2vec_corpus.py --dump-path E:\laboratory\StackOverflow\SOKnowledge\SOKnowledge\db --output-file-name half_code_block_corpus.txt [--code-block-exist-type 2]
+```
