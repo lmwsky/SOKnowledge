@@ -7,3 +7,4 @@ SOKnowledge/tagger/models/
 *.db
 *.pyc
 
+/SOKnowledge/db/so-parser.log
