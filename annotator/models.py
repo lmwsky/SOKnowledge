@@ -11,11 +11,17 @@ from django.db import models
 
 
 class CodeBlockWithTokenizeCode(models.Model):
-    id = models.IntegerField(db_column='Id', blank=True, null=True)  # Field name made lowercase.
-    parentid = models.IntegerField(db_column='ParentId', blank=True, null=True)  # Field name made lowercase.
-    type = models.IntegerField(blank=True, null=True)
-    codeblockname = models.TextField(db_column='codeBlockName', blank=True, null=True)  # Field name made lowercase.
-    codeblock = models.TextField(db_column='codeBlock', blank=True, null=True)  # Field name made lowercase.
+    SMALL_CODE_BLOCK = 0
+    LARGE_CODE_BLOCK = 1
+    CODE_BLOCK_TYPE = (
+        (SMALL_CODE_BLOCK, "small code block"),
+        (LARGE_CODE_BLOCK, "large code block")
+    )
+    id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    parent_id = models.IntegerField(db_column='ParentId')  # Field name made lowercase.
+    type = models.IntegerField(choices=CODE_BLOCK_TYPE, default=SMALL_CODE_BLOCK)
+    code_block_name = models.TextField(db_column='codeBlockName', blank=True, null=True)  # Field name made lowercase.
+    code_block = models.TextField(db_column='codeBlock', blank=True, null=True)  # Field name made lowercase.
     tokenize_text = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -37,25 +43,31 @@ class DjangoMigrations(models.Model):
 class Posts(models.Model):
     body = models.TextField(db_column='Body', blank=True, null=True)  # Field name made lowercase.
     viewcount = models.IntegerField(db_column='ViewCount', blank=True, null=True)  # Field name made lowercase.
-    lasteditordisplayname = models.TextField(db_column='LastEditorDisplayName', blank=True, null=True)  # Field name made lowercase.
+    lasteditordisplayname = models.TextField(db_column='LastEditorDisplayName', blank=True,
+                                             null=True)  # Field name made lowercase.
     closeddate = models.DateTimeField(db_column='ClosedDate', blank=True, null=True)  # Field name made lowercase.
     title = models.TextField(db_column='Title', blank=True, null=True)  # Field name made lowercase.
-    lasteditoruserid = models.IntegerField(db_column='LastEditorUserId', blank=True, null=True)  # Field name made lowercase.
+    lasteditoruserid = models.IntegerField(db_column='LastEditorUserId', blank=True,
+                                           null=True)  # Field name made lowercase.
     parentid = models.IntegerField(db_column='ParentID', blank=True, null=True)  # Field name made lowercase.
     lasteditdate = models.DateTimeField(db_column='LastEditDate', blank=True, null=True)  # Field name made lowercase.
     commentcount = models.IntegerField(db_column='CommentCount', blank=True, null=True)  # Field name made lowercase.
-    communityowneddate = models.DateTimeField(db_column='CommunityOwnedDate', blank=True, null=True)  # Field name made lowercase.
+    communityowneddate = models.DateTimeField(db_column='CommunityOwnedDate', blank=True,
+                                              null=True)  # Field name made lowercase.
     answercount = models.IntegerField(db_column='AnswerCount', blank=True, null=True)  # Field name made lowercase.
-    acceptedanswerid = models.IntegerField(db_column='AcceptedAnswerId', blank=True, null=True)  # Field name made lowercase.
+    acceptedanswerid = models.IntegerField(db_column='AcceptedAnswerId', blank=True,
+                                           null=True)  # Field name made lowercase.
     score = models.IntegerField(db_column='Score', blank=True, null=True)  # Field name made lowercase.
-    ownerdisplayname = models.TextField(db_column='OwnerDisplayName', blank=True, null=True)  # Field name made lowercase.
+    ownerdisplayname = models.TextField(db_column='OwnerDisplayName', blank=True,
+                                        null=True)  # Field name made lowercase.
     posttypeid = models.IntegerField(db_column='PostTypeId', blank=True, null=True)  # Field name made lowercase.
     owneruserid = models.IntegerField(db_column='OwnerUserId', blank=True, null=True)  # Field name made lowercase.
     tags = models.TextField(db_column='Tags', blank=True, null=True)  # Field name made lowercase.
     creationdate = models.DateTimeField(db_column='CreationDate', blank=True, null=True)  # Field name made lowercase.
     favoritecount = models.IntegerField(db_column='FavoriteCount', blank=True, null=True)  # Field name made lowercase.
-    id = models.IntegerField(db_column='Id', unique=True, blank=True, null=True)  # Field name made lowercase.
-    lastactivitydate = models.DateTimeField(db_column='LastActivityDate', blank=True, null=True)  # Field name made lowercase.
+    id = models.IntegerField(db_column='Id', unique=True, primary_key=True)  # Field name made lowercase.
+    lastactivitydate = models.DateTimeField(db_column='LastActivityDate', blank=True,
+                                            null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -63,7 +75,7 @@ class Posts(models.Model):
 
 
 class RemoveTagPostsBody(models.Model):
-    id = models.IntegerField(db_column='Id', primary_key=True, blank=True, null=True)  # Field name made lowercase.
+    id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
     removetagbody = models.TextField(db_column='RemoveTagBody', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -71,18 +83,8 @@ class RemoveTagPostsBody(models.Model):
         db_table = 'remove_tag_posts_body'
 
 
-class SqliteStat1(models.Model):
-    tbl = models.TextField(blank=True, null=True)  # This field type is a guess.
-    idx = models.TextField(blank=True, null=True)  # This field type is a guess.
-    stat = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = 'sqlite_stat1'
-
-
 class TokenizeRemovetagbodyForRemoveTagPostsBody(models.Model):
-    id = models.IntegerField(db_column='Id', primary_key=True, blank=True, null=True)  # Field name made lowercase.
+    id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
     tokenize_text = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -91,7 +93,7 @@ class TokenizeRemovetagbodyForRemoveTagPostsBody(models.Model):
 
 
 class TokenizeCodeblockForPostsCodeBlock(models.Model):
-    id = models.IntegerField(db_column='Id', primary_key=True, blank=True, null=True)  # Field name made lowercase.
+    id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
     tokenize_text = models.TextField(blank=True, null=True)
 
     class Meta:
