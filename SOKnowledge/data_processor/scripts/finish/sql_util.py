@@ -12,8 +12,7 @@ def generate_select_question_id_list(min_id=None, max_id=None):
         condition_list.append("Id<={max_id}".format(max_id=max_id))
     if min_id:
         condition_list.append("Id>{min_id}".format(min_id=min_id))
-    if min_id:
-        condition_list.append("PostTypeId=1")
+    condition_list.append("PostTypeId=1")
     return sql + " AND ".join(condition_list)
 
 
