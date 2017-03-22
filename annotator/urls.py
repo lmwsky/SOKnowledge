@@ -14,9 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
 from . import views
+app_name = 'annotator'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^(?P<post_id>[0-9]+)/$', views.post_detail, name='post_detail'),
 ]
