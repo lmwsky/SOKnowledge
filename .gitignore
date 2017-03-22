@@ -8,3 +8,4 @@ SOKnowledge/tagger/models/
 *.pyc
 
 /SOKnowledge/db/so-parser.log
+/annotator/test/
