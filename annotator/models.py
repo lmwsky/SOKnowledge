@@ -18,8 +18,8 @@ class CodeBlockWithTokenizeCode(models.Model):
         (LARGE_CODE_BLOCK, "large code block")
     )
     id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    parent_id = models.IntegerField(db_column='ParentId')  # Field name made lowercase.
-    type = models.IntegerField(choices=CODE_BLOCK_TYPE, default=SMALL_CODE_BLOCK)
+    parent_id = models.IntegerField(db_index=True,db_column='ParentId')  # Field name made lowercase.
+    type = models.IntegerField(db_index=True,choices=CODE_BLOCK_TYPE, default=SMALL_CODE_BLOCK)
     code_block_name = models.TextField(db_column='codeBlockName', blank=True, null=True)  # Field name made lowercase.
     code_block = models.TextField(db_column='codeBlock', blank=True, null=True)  # Field name made lowercase.
     tokenize_text = models.TextField(blank=True, null=True)
@@ -49,7 +49,7 @@ class Posts(models.Model):
     title = models.TextField(db_column='Title', blank=True, null=True)  # Field name made lowercase.
     lasteditoruserid = models.IntegerField(db_column='LastEditorUserId', blank=True,
                                            null=True)  # Field name made lowercase.
-    parentid = models.IntegerField(db_column='ParentID', blank=True, null=True)  # Field name made lowercase.
+    parentid = models.IntegerField(db_index=True,db_column='ParentID', blank=True, null=True)  # Field name made lowercase.
     lasteditdate = models.DateTimeField(db_column='LastEditDate', blank=True, null=True)  # Field name made lowercase.
     commentcount = models.IntegerField(db_column='CommentCount', blank=True, null=True)  # Field name made lowercase.
     communityowneddate = models.DateTimeField(db_column='CommunityOwnedDate', blank=True,
@@ -60,7 +60,7 @@ class Posts(models.Model):
     score = models.IntegerField(db_column='Score', blank=True, null=True)  # Field name made lowercase.
     ownerdisplayname = models.TextField(db_column='OwnerDisplayName', blank=True,
                                         null=True)  # Field name made lowercase.
-    posttypeid = models.IntegerField(db_column='PostTypeId', blank=True, null=True)  # Field name made lowercase.
+    posttypeid = models.IntegerField(db_index=True,db_column='PostTypeId', blank=True, null=True)  # Field name made lowercase.
     owneruserid = models.IntegerField(db_column='OwnerUserId', blank=True, null=True)  # Field name made lowercase.
     tags = models.TextField(db_column='Tags', blank=True, null=True)  # Field name made lowercase.
     creationdate = models.DateTimeField(db_column='CreationDate', blank=True, null=True)  # Field name made lowercase.

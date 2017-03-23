@@ -27,9 +27,9 @@ def get_question_list(offset=None, num=None):
 def get_all_code_block(post_id, code_block_type=-1):
     try:
         if code_block_type == -1:
-            return CodeBlockWithTokenizeCode.objects.all().filter(parent_id=post_id)
+            return CodeBlockWithTokenizeCode.objects.filter(parent_id=post_id)
         else:
-            return CodeBlockWithTokenizeCode.objects.all().filter(parent_id=post_id).filter(type=code_block_type)
+            return CodeBlockWithTokenizeCode.objects.filter(parent_id=post_id).filter(type=code_block_type)
     except Exception, error:
         return []
 
@@ -104,6 +104,7 @@ def get_post_text(post, post_text_type=POST_TEXT_TYPE_TOKENIZE_WITH_SMALL_CODE_B
 
 
 def export_word2vec_corpus_by_title_question_answers_order(num=100,
+                                                           offset=0,
                                                            post_text_type=POST_TEXT_TYPE_TOKENIZE_WITH_SMALL_CODE_BLOCK,
                                                            output_file_path=".",
                                                            output_file_name="corpus.txt"):
@@ -122,13 +123,13 @@ def export_word2vec_corpus_by_title_question_answers_order(num=100,
     answer_num = 0
     out_file_full_path = os.path.join(output_file_path, output_file_name)
     with codecs.open(out_file_full_path, 'w', encoding='utf-8') as output:
-        question_list = get_question_list(num=num)
+        question_list = get_question_list(offset=offset, num=num)
         for question in question_list:
             if question.title:
                 output.write(" ".join(word_tokenize_nltk(question.title)) + "\n")
             post_text = get_post_text(question, post_text_type)
             if post_text:
-                if question_num % 100000 == 0:
+                if question_num % 10000 == 0:
                     print 'finish ', 'question=', question_num, ' answer=', answer_num
                 question_num += 1
                 output.write(post_text)
