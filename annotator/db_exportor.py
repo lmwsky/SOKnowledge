@@ -16,12 +16,13 @@ def get_post_code_block_type_str(code_block_type):
 
 
 def export_code_block_ner_data_set_by_step(
+        start=0,
         max_num=1000,
         step=100,
         post_text_type=-1,
         output_file_path=".",
         output_file_name="code_block_ner.txt"):
-    for offset in range(0, max_num, step):
+    for offset in range(start, max_num, step):
         export_code_block_ner_data_set(num=step, offset=offset, post_text_type=post_text_type,
                                        output_file_path=output_file_path, output_file_name=output_file_name)
         print 'done', offset, '-', offset + step
@@ -49,7 +50,6 @@ def export_code_block_ner_data_set(
                 question_list = get_question_list(offset=offset, num=num)
                 question_num = 0
                 for question in question_list:
-                    print 'question_num', question_num
                     words_list = []
                     tags_list = []
                     group = get_data_set_group(question_num)
