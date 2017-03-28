@@ -7,10 +7,9 @@ import optparse
 import itertools
 from collections import OrderedDict
 
-from SOKnowledge.tagger import loader
-from SOKnowledge.tagger.loader import update_tag_scheme, word_mapping, augment_with_pretrained, char_mapping, \
-    tag_mapping, prepare_dataset
-from SOKnowledge.tagger.model import Model
+from loader import update_tag_scheme, word_mapping, augment_with_pretrained, char_mapping, \
+    tag_mapping, prepare_dataset, load_sentences
+from model import Model
 from utils import create_input, evaluate, models_path, eval_script, eval_temp
 
 
@@ -223,9 +222,9 @@ class NERTaggerTrainer(object):
         tag_scheme = parameters['tag_scheme']
 
         # Load sentences
-        train_sentences = loader.load_sentences(self.train_set_location, lower, zeros)
-        dev_sentences = loader.load_sentences(self.dev_set_location, lower, zeros)
-        test_sentences = loader.load_sentences(self.test_set_location, lower, zeros)
+        train_sentences = load_sentences(self.train_set_location, lower, zeros)
+        dev_sentences = load_sentences(self.dev_set_location, lower, zeros)
+        test_sentences = load_sentences(self.test_set_location, lower, zeros)
 
         # Use selected tagging scheme (IOB / IOBES)
         update_tag_scheme(train_sentences, tag_scheme)
