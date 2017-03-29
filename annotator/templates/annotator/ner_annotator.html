@@ -1,0 +1,83 @@
+{% load static %}
+
+<html>
+<head>
+    <title>Annotation</title>
+    <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'annotator/texttagger.css' %}"/>
+    <script src="{% static 'annotator/texttagger.js' %}"></script>
+
+</head>
+<body>
+<div></div>
+<div class="container">
+
+    <div class="page-header">
+        <h2>Annotation
+            <small>{{ postId }}</small>
+        </h2>
+    </div>
+    <div id="tagdescriptions">
+        <h3>Labels</h3>
+        {% for label in labels %}
+            <h4>
+                <span class="label label-default {{ label.value }} tagged">{{ label.textLabel }}</span>
+                <span>{{ label.description }}</span>
+            </h4>
+        {% endfor %}
+    </div>
+
+    <div>
+        <h3>please tag text below</h3>
+    </div>
+    <div>
+        <pre id="needed_tag_text">{{ text }}</pre>
+    </div>
+
+    <div>
+        <h3>tagged text output</h3>
+    </div>
+    <div>
+        <pre id="tagged_text"></pre>
+    </div>
+
+    <div class="form-group">
+        <a id="savebutton"><span aria-hidden="true"></span> Save</a>
+        <a id="removebutton"><span aria-hidden="true"></span> Remove All Labels</a>
+    </div>
+
+    <div class="form-group">
+        <div class="btn-group" role="group" aria-label="Next and previous">
+            <a href="#" class="btn btn-default saveclass" role="button"><span class="glyphicon glyphicon-chevron-left"
+                                                                              aria-hidden="true"></span>Previous</a>
+            <a href="#" class="btn btn-default saveclass" role="button">Next<span
+                    class=" glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            not_tagged_text = $("#needed_tag_text").text();
+            $("#needed_tag_text").text("");
+            var textTagger = $("#needed_tag_text").textTagger(not_tagged_text,{{labels_data_for_js|safe}},
+                    function (userTaggedResult) {
+                        $("#tagged_text").text(userTaggedResult.nlpText);
+                        console.log(userTaggedResult);
+                    })
+
+        })
+    })
+</script>
