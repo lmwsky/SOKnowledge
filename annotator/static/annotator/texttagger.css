@@ -31,7 +31,25 @@ span.tagged.location {
 span.tagged.product {
     background-color: #101010;
 }
+span.tagged.api {
+    background-color: #00b3ee;
+}
 
+span.tagged.platform {
+    background-color: #449d44;
+}
+
+span.tagged.frame {
+    background-color: #b92c28;
+}
+
+span.tagged.program_language {
+    background-color: #e38d13;
+}
+
+span.tagged.standard {
+    background-color: #101010;
+}
 /* override bootstrap menu style */
 ul.dropdown-menu.context-menu {
     position: fixed;
