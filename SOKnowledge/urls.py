@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^annotator/', include('annotator.urls')),
+    url(r'^tagger/', include('tagger.urls')),
     url(r'^admin/', admin.site.urls),
 ]
