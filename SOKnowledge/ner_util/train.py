@@ -162,6 +162,77 @@ class NERTaggerTrainer(object):
         if not os.path.exists(models_path):
             os.makedirs(models_path)
 
+    def init_model_parameters_from_disk(self,model_path):
+        # Check parameters validity
+        assert os.path.isdir(model_path)
+
+        # Load existing models
+        print "Loading model from", model_path, ' ...'
+        self.model = Model(model_path=model_path)
+        self.parameters = self.model.parameters
+        # Load reverse m appings
+        self.word_to_id, self.char_to_id, self.tag_to_id = [
+            {v: k for k, v in x.items()}
+            for x in [self.model.id_to_word, self.model.id_to_char, self.model.id_to_tag]
+            ]
+
+        # Load the models
+        self.f_train, self.f_eval = self.model.build(training=True, **self.parameters)
+        self.model.reload()
+    def init_training_data_for_retraining(self,
+        train_set_location,
+        dev_set_location,
+        test_set_location,
+
+    ):
+        self.train_set_location = train_set_location
+        self.dev_set_location = dev_set_location
+        self.test_set_location = test_set_location
+
+        parameters=self.parameters
+        # Data parameters
+        lower = parameters['lower']
+        zeros = parameters['zeros']
+        tag_scheme = parameters['tag_scheme']
+
+        # Load sentences
+        train_sentences = load_sentences(self.train_set_location, lower, zeros)
+        dev_sentences = load_sentences(self.dev_set_location, lower, zeros)
+        test_sentences = load_sentences(self.test_set_location, lower, zeros)
+
+        # Use selected tagging scheme (IOB / IOBES)
+        update_tag_scheme(train_sentences, tag_scheme)
+        update_tag_scheme(dev_sentences, tag_scheme)
+        update_tag_scheme(test_sentences, tag_scheme)
+
+        word_to_id=self.word_to_id
+        char_to_id=self.char_to_id
+        tag_to_id=self.tag_to_id
+        # Index data
+        self.train_data = prepare_dataset(
+            train_sentences, word_to_id, char_to_id, tag_to_id, lower
+        )
+        self.dev_data = prepare_dataset(
+            dev_sentences, word_to_id, char_to_id, tag_to_id, lower
+        )
+        self.test_data = prepare_dataset(
+            test_sentences, word_to_id, char_to_id, tag_to_id, lower
+        )
+
+        print "%i / %i / %i sentences in train / dev / test." % (
+            len(self.train_data), len(self.dev_data), len(self.test_data))
+        dico_words_train = word_mapping(train_sentences, lower)[0]
+
+        #self.singletons = set([word_to_id[k] for k, v
+        #                       in dico_words_train.items() if v == 1])
+
+
+        #self.dico_tags = self.model. this value doesn't need
+        self.id_to_tag = self.model.id_to_tag
+        self.train_sentences = train_sentences
+        self.dev_sentences = dev_sentences
+        self.test_sentences = test_sentences
+
     def init_model_parameters(self,
                               train_set_location,
                               dev_set_location,
@@ -176,7 +247,7 @@ class NERTaggerTrainer(object):
                               word_lstm_dim=100,
                               word_bidirect=1,
                               pre_emb="",
-                              all_emb=0,
+                              all_emb=1,
                               cap_dim=1,
                               crf=1,
                               dropout=0.5,
@@ -308,7 +379,7 @@ class NERTaggerTrainer(object):
                 input = create_input(self.train_data[index], self.parameters, True, self.singletons)
                 new_cost = self.f_train(*input)
                 epoch_costs.append(new_cost)
-                if i % 50 == 0 and i > 0 == 0:
+                if i % 60 == 0 and i > 0 == 0:
                     print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
                 if count % freq_eval == 0:
                     dev_score = evaluate(self.parameters, self.f_eval, self.dev_sentences,
@@ -330,11 +401,15 @@ class NERTaggerTrainer(object):
 
 if __name__ == "__main__":
     trainer = NERTaggerTrainer()
-    trainer.init_model_parameters(train_set_location="corpus/train_0_200000_full_tag_code_block_ner.txt",
-                                  dev_set_location="corpus/dev_0_200000_full_tag_code_block_ner.txt",
-                                  test_set_location="corpus/test_0_200000_full_tag_code_block_ner.txt",
-                                  pre_emb="corpus/replace_large_code_block/word_embedding.txt"
-                                  )
-    trainer.init_model("code_block_tagger")
-    trainer.train(n_epochs=20,freq_eval=100000)
-
+#    trainer.init_model_parameters(train_set_location="corpus/train_12010000_12020000_full_tag_code_block_ner.txt",
+#                                  dev_set_location="corpus/dev_12010000_12020000_full_tag_code_block_ner.txt",
+#                                  test_set_location="corpus/test_12010000_12020000_full_tag_code_block_ner.txt",
+#                                  pre_emb="corpus/replace_large_code_block/word_embedding.txt"
+#                                  )
+#    trainer.init_model("code_block_tagger")
+    trainer.init_model_parameters_from_disk('models/code_block_tagger')
+    trainer.init_training_data_for_retraining(train_set_location="corpus/train_12010000_12020000_full_tag_code_block_ner.txt",
+                               dev_set_location="corpus/dev_12010000_12020000_full_tag_code_block_ner.txt",
+                               test_set_location="corpus/test_12010000_12020000_full_tag_code_block_ner.txt"
+                                )
+    trainer.train(n_epochs=20, freq_eval=5000)
