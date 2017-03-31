@@ -22,9 +22,18 @@
 <div class="container">
 
     <div class="page-header">
-        <h2>Annotation
-            <small>{{ postId }}</small>
-        </h2>
+        {% if post_type == 1 %}
+
+            <h2>Annotation Question
+                <small>{{ postId }}</small>
+            </h2>
+        {% endif %}
+        {% if post_type == 2 %}
+
+            <h2>Annotation Answer
+                <small>{{ postId }}</small>
+            </h2>
+        {% endif %}
     </div>
     <div id="tagdescriptions">
         <h3>Labels</h3>
@@ -47,7 +56,20 @@
         <h3>tagged text output</h3>
     </div>
     <div>
-        <pre id="tagged_text"></pre>
+        {% if post_type == 1 %}
+            <form method="POST" action={% url 'annotator:process_ner_annotator_question' question_index %}>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit"/>
+            </form>
+        {% endif %}
+        {% if post_type == 2 %}
+            <form method="POST" action={% url 'annotator:process_ner_annotator_answer' question_index answer_index %}>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit"/>
+            </form>
+        {% endif %}
     </div>
 
     <div class="form-group">
@@ -57,10 +79,54 @@
 
     <div class="form-group">
         <div class="btn-group" role="group" aria-label="Next and previous">
-            <a href="#" class="btn btn-default saveclass" role="button"><span class="glyphicon glyphicon-chevron-left"
-                                                                              aria-hidden="true"></span>Previous</a>
-            <a href="#" class="btn btn-default saveclass" role="button">Next<span
-                    class=" glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+            {% if question_index > 0 %}
+                <a class="btn btn-default saveclass" role="button"
+                   href={% url 'annotator:ner_annotator_question' question_index|add:-1 %}><span
+                        class="glyphicon glyphicon-chevron-left"
+                        aria-hidden="true"></span>Previous Question</a>
+            {% endif %}
+
+            <a class="btn btn-default saveclass" role="button"
+               href={% url 'annotator:listing_question' 1 %}
+            >Show All Questions<span
+                    class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+            ></span></a>
+
+            <a class="btn btn-default saveclass" role="button"
+               href={% url 'annotator:ner_annotator_question' question_index|add:1 %}
+            >Next Question<span
+                    class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+            ></span></a>
+
+            {% if answer_index > 0 %}
+                <a class="btn btn-default saveclass" role="button"
+                   href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:-1 %}><span
+                        class="glyphicon glyphicon-chevron-left"
+                        aria-hidden="true"></span>Previous Answer</a>
+            {% endif %}
+
+            {% if answer_index < 0 %}
+                <a class="btn btn-default saveclass" role="button"
+                   href={% url 'annotator:ner_annotator_answer' question_index 0 %}
+                >Show First Answer<span
+                        class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+                ></span></a>
+            {% endif %}
+
+
+            <a class="btn btn-default saveclass" role="button"
+               href={% url 'annotator:listing_answer_for_question' question_index 1 %}
+            >Show All Answers<span
+                    class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+            ></span></a>
+            {% if answer_index >= 0 %}
+                <a class="btn btn-default saveclass" role="button"
+                   href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:1 %}
+                >Next Answer<span
+                        class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+                ></span></a>
+            {% endif %}
+
         </div>
     </div>
 
@@ -72,7 +138,7 @@
         $(function () {
             not_tagged_text = $("#needed_tag_text").text();
             $("#needed_tag_text").text("");
-            var textTagger = $("#needed_tag_text").textTagger(not_tagged_text,{{labels_data_for_js|safe}},
+            var textTagger = $("#needed_tag_text").textTagger(not_tagged_text, {{labels_data_for_js|safe}},
                     function (userTaggedResult) {
                         $("#tagged_text").text(userTaggedResult.nlpText);
                         console.log(userTaggedResult);

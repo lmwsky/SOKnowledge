@@ -4,7 +4,8 @@ import codecs
 import os
 
 from SOKnowledge.data_processor.scripts.nlp_util import word_tokenize_nltk
-from annotator.models import Posts, CodeBlockWithTokenizeCode, TokenizeRemovetagbodyForRemoveTagPostsBody
+from annotator.models import Posts, CodeBlockWithTokenizeCode, TokenizeRemovetagbodyForRemoveTagPostsBody, \
+    NamedEntityAnnotation
 
 
 def get_all_answer(question_id):
@@ -182,3 +183,14 @@ def generate_corpus_with_all_code_block(output_file_name, output_file_path, offs
                 print error
 
     print 'export ', offset, '-', offset + num
+
+
+def get_annotation(post_id):
+    try:
+        annotation = NamedEntityAnnotation.objects.get(id=post_id)
+        if annotation:
+            return annotation
+        else:
+            return None
+    except Exception, error:
+        return None

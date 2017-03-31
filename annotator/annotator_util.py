@@ -16,8 +16,9 @@ def save_as_ner_annotation(post_id, text):
     if annotation:
         annotation.annotation_text = text
         annotation.save()
+        print 'save annotation for id=', annotation.id
+
     else:
         annotation = NamedEntityAnnotation(id=post_id, annotation_text=text)
         annotation.save()
-
-
+        print 'save annotation for id=', annotation.id
