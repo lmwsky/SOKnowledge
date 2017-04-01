@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'annotator.apps.AnnotatorConfig',
     'tagger.apps.TaggerConfig',
+    'index.apps.IndexConfig',
 
 ]
 

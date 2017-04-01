@@ -20,7 +20,7 @@
         <h2>please enter the text needed tagged</h2>
     </div>
 
-    <form action="." method="POST">
+    <form action="." method="POST" role="form">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit"/>

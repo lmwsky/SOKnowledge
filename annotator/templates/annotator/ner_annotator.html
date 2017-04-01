@@ -59,7 +59,7 @@
     </div>
     <div>
         {% if post_type == 1 %}
-            <form method="POST" action={% url 'annotator:process_ner_annotator_question' question_index %}>
+            <form role="form" method="POST" action={% url 'annotator:process_ner_annotator_question' question_index %}>
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit"/>

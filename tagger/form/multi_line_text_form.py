@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MultiLineTextForm(forms.Form):
-    input_text = forms.CharField(widget=forms.Textarea(attrs={'id': 'input_text'}))
+    input_text = forms.CharField(widget=forms.Textarea(attrs={'id': 'input_text','class':'form-control'}))
 
     def clean_input_text(self):
         data = self.cleaned_data['input_text']
