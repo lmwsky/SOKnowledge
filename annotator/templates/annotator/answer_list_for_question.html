@@ -1,35 +1,50 @@
-<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<head>
+    <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
 
-<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-{% for answer_post in answer_post_list %}
-    {% with index=forloop.counter0|add:-1 %}
-    <a href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
-    <h5>
-        <small>{{ answer_post.id }}</small>
-        Score:{{ answer_post.Score }}</h5>
-    </a>
-    {% endwith %}
-{% endfor %}
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+</head>
+<body class="container">
+<div class="panel panel-default">
+    <div class="panel-heading">Answer List</div>
+    <ul class="list-group">
+        {% for answer_post in answer_post_list %}
+            {% with index=forloop.counter0|add:-1 %}
+                <li class="list-group-item">
+                    <a href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                        <h4>
+                            <small>{{ answer_post.id }}</small><strong>       score:{{ answer_post.score }}</strong>
+                        </h4>
+                    </a>
+                </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
+</div>
 
 <div class="pagination">
-    <span class="step-links">
+    <ul class="pager">
         {% if answer_post_list.has_previous %}
-            <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.previous_page_number %}>previous</a>
+            <li>
+                <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.previous_page_number %}>previous</a>
+            </li>
         {% endif %}
 
-        <span class="current">
+        <li class="current">
             Page {{ answer_post_list.number }} of {{ answer_post_list.paginator.num_pages }}.
-        </span>
+        </li>
 
         {% if answer_post_list.has_next %}
-             <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.next_page_number %}>next</a>
+            <li>
+                <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.next_page_number %}>next</a>
+            </li>
         {% endif %}
-    </span>
+    </ul>
 </div>
+</body>
