@@ -19,9 +19,6 @@ from . import views
 app_name = 'annotator'
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^(?P<post_id>[0-9]+)/$', views.post_detail, name='post_detail'),
-    url(r'^ner/(?P<post_id>[0-9]+)/$', views.ner_annotator, name='ner_annotator'),
     url(r'^ner/(?P<question_index>[0-9]+)/question$', views.ner_annotator_question, name='ner_annotator_question'),
 
     url(r'^ner/(?P<question_index>[0-9]+)/(?P<answer_index>[0-9]+)/answer$', views.ner_annotator_answer,

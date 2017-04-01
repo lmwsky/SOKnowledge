@@ -47,6 +47,25 @@ def ner_annotator(request, post_id):
 
 
 def process_ner_annotator_question(request, question_index):
+    print 'first request.POST=', request.POST
+    print 'first question_index=', question_index
+
+    question_index = int(question_index)
+    answer_index = -1
+    if request.method == 'POST':
+        form = TaggedTextForm(request.POST)
+        print 'post=',request.POST
+        if form.is_valid():
+            text = form.cleaned_data['input_text']
+            post_id = form.cleaned_data['post_id']
+            save_as_ner_annotation(post_id, text)
+            return redirect(reverse('annotator:ner_annotator_question', args=[question_index, ]))
+
+    return HttpResponse("submit not ok")
+
+
+def ner_annotator_question(request, question_index):
+
     question_index = int(question_index)
     answer_index = -1
     if request.method == 'POST':
@@ -55,16 +74,8 @@ def process_ner_annotator_question(request, question_index):
             text = form.cleaned_data['input_text']
             post_id = form.cleaned_data['post_id']
             save_as_ner_annotation(post_id, text)
-            return redirect(reverse('annotator:ner_annotator_question', args=[question_index, ]))
-        else:
-            print form.clean_input_text()
+            return redirect(reverse('annotator:ner_annotator_question', kwargs={'question_index': question_index}))
 
-    return HttpResponse("submit not ok")
-
-
-def ner_annotator_question(request, question_index):
-    question_index = int(question_index)
-    answer_index = -1
     question_post = Posts.objects.filter(posttypeid=1)[question_index]
     post_id = question_post.id
 
@@ -102,6 +113,13 @@ def process_ner_annotator_answer(request, question_index, answer_index):
 def ner_annotator_answer(request, question_index, answer_index):
     question_index = int(question_index)
     answer_index = int(answer_index)
+    if request.method == 'POST':
+        form = TaggedTextForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['input_text']
+            post_id = form.cleaned_data['post_id']
+            save_as_ner_annotation(post_id, text)
+            return redirect(reverse('annotator:ner_annotator_answer', args=[question_index, answer_index]))
     question_post = Posts.objects.filter(posttypeid=1)[question_index]
     answer_post = Posts.objects.filter(parentid=question_post.id)[answer_index]
     post_id = answer_post.id

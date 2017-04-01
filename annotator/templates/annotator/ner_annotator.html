@@ -59,14 +59,14 @@
     </div>
     <div>
         {% if post_type == 1 %}
-            <form role="form" method="POST" action={% url 'annotator:process_ner_annotator_question' question_index %}>
+            <form role="form" method="POST" action={% url 'annotator:ner_annotator_question' question_index %}>
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit"/>
             </form>
         {% endif %}
         {% if post_type == 2 %}
-            <form method="POST" action={% url 'annotator:process_ner_annotator_answer' question_index answer_index %}>
+            <form role="form" method="POST" action={% url 'annotator:ner_annotator_answer' question_index answer_index %}>
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit"/>
