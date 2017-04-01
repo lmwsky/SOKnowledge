@@ -4,13 +4,12 @@ import json
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template import loader
 from django.urls import reverse
 
 from annotator.annotator_util import get_need_tagged_text, save_as_ner_annotation
-from annotator.format_util import __labels__
+from SOKnowledge.ner_util.format_util import __labels__
 from annotator.form.tagged_text_form import TaggedTextForm
 from annotator.query_util import get_post_tokenize_remove_tag_body_with_small_code_block, get_annotation
 from models import TokenizeRemovetagbodyForRemoveTagPostsBody, Posts

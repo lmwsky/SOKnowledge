@@ -12,12 +12,48 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'annotator/texttagger.css' %}"/>
+    <link rel="stylesheet" href="{% static 'annotator/my_style.css' %}"/>
+
+    <script src="{% static 'annotator/texttagger.js' %}"></script>
 </head>
-<h2>original text</h2>
-<pre><p>{{ original_text }}</p></pre>
+<body>
+<div class="container">
+    <div class="page-header">
+            <h2>NER result</h2>
+</div>
+    <div id="tagdescriptions">
+        <h3>Labels</h3>
+        {% for label in labels %}
+            <h4>
+                <span class="label label-default {{ label.value }} tagged">{{ label.textLabel }}</span>
+                <span>{{ label.description }}</span>
+            </h4>
+        {% endfor %}
+    </div>
 
-<h2>tagger text</h2>
-<pre><p>{{ html_format_text }}</p></pre>
+    <h2>original text</h2>
+    <pre><p>{{ original_text }}</p></pre>
 
-<h2>tagger text for conll format</h2>
-<pre><p>{{ conll_format_text }}</p></pre>
+    <h2>visual tagger</h2>
+    <pre id="needed_tag_text">{{ se_format_text }}</pre>
+
+    <h2>tagged text</h2>
+    <pre><p>{{ html_format_text }}</p></pre>
+
+    <h2>tagger text for conll format</h2>
+    <pre><p>{{ conll_format_text }}</p></pre>
+</div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            not_tagged_text = $("#needed_tag_text").text();
+            $("#needed_tag_text").text("");
+            var textTagger = $("#needed_tag_text").textTagger(not_tagged_text, {{labels_data_for_js|safe}},
+                    function (userTaggedResult) {
+                    })
+
+        })
+    })
+</script>

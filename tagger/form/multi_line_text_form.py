@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MultiLineTextForm(forms.Form):
-    input_text = forms.CharField(help_text="Enter the text needed to do named entity recognition",widget=forms.Textarea)
+    input_text = forms.CharField(widget=forms.Textarea(attrs={'id': 'input_text'}))
 
     def clean_input_text(self):
         data = self.cleaned_data['input_text']

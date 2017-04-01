@@ -1,3 +1,4 @@
+{% load static %}
 <html>
 <head>
     <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -10,12 +11,20 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'annotator/my_style.css' %}"/>
+
 </head>
 <body>
-<form action="." method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit"/>
-</form>
+<div class="container">
+    <div class="page-header">
+        <h2>please enter the text needed tagged</h2>
+    </div>
+
+    <form action="." method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit"/>
+    </form>
+</div>
 </body>
 </html>

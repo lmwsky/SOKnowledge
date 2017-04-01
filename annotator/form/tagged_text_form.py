@@ -5,8 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class TaggedTextForm(forms.Form):
-    input_text = forms.CharField(widget=forms.Textarea(attrs={'id': 'tagged_text'}))
-    post_id = forms.IntegerField(widget=forms.NumberInput(attrs={'id': 'post_id_in_form'}))
+    input_text = forms.CharField(widget=forms.Textarea(attrs={'id': 'tagged_text', 'disabled': True}))
+    post_id = forms.IntegerField(widget=forms.NumberInput(attrs={'id': 'post_id_in_form', 'disabled': True}))
 
     def clean_input_text(self):
         data = self.cleaned_data['input_text']
