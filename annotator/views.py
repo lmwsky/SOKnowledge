@@ -54,7 +54,7 @@ def process_ner_annotator_question(request, question_index):
     answer_index = -1
     if request.method == 'POST':
         form = TaggedTextForm(request.POST)
-        print 'post=',request.POST
+        print 'post=', request.POST
         if form.is_valid():
             text = form.cleaned_data['input_text']
             post_id = form.cleaned_data['post_id']
@@ -65,7 +65,6 @@ def process_ner_annotator_question(request, question_index):
 
 
 def ner_annotator_question(request, question_index):
-
     question_index = int(question_index)
     answer_index = -1
     if request.method == 'POST':
@@ -84,7 +83,7 @@ def ner_annotator_question(request, question_index):
     default_data = {'post_id': question_post.id, 'input_text': text}
     form = TaggedTextForm(default_data)
     return render(request, 'annotator/ner_annotator.html', {
-        'post_type':1,
+        'post_type': 1,
         'question_index': question_index,
         'answer_index': answer_index,
         'form': form,
@@ -143,7 +142,8 @@ def ner_annotator_answer(request, question_index, answer_index):
     })
 
 
-def listing_question(request, page):
+def listing_question_for_annotator(request, page, annotator_type):
+    annotator_type = int(annotator_type)
     question_post_list = Posts.objects.filter(posttypeid=1)
     paginator = Paginator(question_post_list, PER_PAGE)  # Show 25 contacts per page
     try:
@@ -155,11 +155,13 @@ def listing_question(request, page):
         # If page is out of range (e.g. 9999), deliver last page of results.
         question_post_sub_list = paginator.page(paginator.num_pages)
     return render(request, 'annotator/question_list.html', {'question_post_list': question_post_sub_list,
+                                                            'annotator_type': annotator_type
                                                             })
 
 
-def listing_answer_for_question(request, question_index, page):
+def listing_answer_for_question_for_annotator(request, question_index, page, annotator_type):
     question_index = int(question_index)
+    annotator_type = int(annotator_type)
     question_post = Posts.objects.filter(posttypeid=1)[question_index]
 
     answer_post_list = Posts.objects.filter(parentid=question_post.id)
@@ -176,4 +178,5 @@ def listing_answer_for_question(request, question_index, page):
     return render(request, 'annotator/answer_list_for_question.html', {
         'question_index': question_index,
         'answer_post_list': answer_post_sub_list,
+        'annotator_type': annotator_type
     })

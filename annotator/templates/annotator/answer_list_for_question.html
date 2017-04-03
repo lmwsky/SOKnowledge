@@ -17,10 +17,19 @@
         {% for answer_post in answer_post_list %}
             {% with index=forloop.counter0|add:-1 %}
                 <li class="list-group-item">
-                    <a href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
-                        <h4>
-                            <small>{{ answer_post.id }}</small><strong>       score:{{ answer_post.score }}</strong>
-                        </h4>
+                    {% if annotator_type == 1 %}
+
+                        <a href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                    {% endif %}
+                    {% if annotator_type == 2 %}
+
+                        <a href={% url 'annotator:sentence_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                    {% endif %}
+
+                    <h4>
+                        <small>{{ answer_post.id }}</small>
+                        <strong> score:{{ answer_post.score }}</strong>
+                    </h4>
                     </a>
                 </li>
             {% endwith %}
@@ -32,7 +41,7 @@
     <ul class="pager">
         {% if answer_post_list.has_previous %}
             <li>
-                <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.previous_page_number %}>previous</a>
+                <a href={% url 'annotator:listing_answer_for_question_for_annotator' question_index answer_post_list.previous_page_number annotator_type%}>previous</a>
             </li>
         {% endif %}
 
@@ -42,7 +51,7 @@
 
         {% if answer_post_list.has_next %}
             <li>
-                <a href={% url 'annotator:listing_answer_for_question' question_index answer_post_list.next_page_number %}>next</a>
+                <a href={% url 'annotator:listing_answer_for_question_for_annotator' question_index answer_post_list.next_page_number annotator_type %}>next</a>
             </li>
         {% endif %}
     </ul>
