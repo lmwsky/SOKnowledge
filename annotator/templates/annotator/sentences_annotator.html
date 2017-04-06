@@ -53,7 +53,12 @@
     <div>
         <pre id="needed_tag_text">{{ text }}</pre>
     </div>
-
+    {% for code_block in code_block_list %}
+        <div>
+            <label>{{ code_block.code_block_name }}</label>
+            <pre>{{ code_block.code_block }}</pre>
+        </div>
+    {% endfor %}
     <div>
         <h3>tagged text output</h3>
     </div>

@@ -41,6 +41,12 @@ def get_all_small_code_block(post_id):
             type=CodeBlockWithTokenizeCode.SMALL_CODE_BLOCK)
     except Exception, error:
         return []
+def get_all_large_code_block(post_id):
+    try:
+        return CodeBlockWithTokenizeCode.objects.filter(parent_id=post_id).filter(
+            type=CodeBlockWithTokenizeCode.LARGE_CODE_BLOCK)
+    except Exception, error:
+        return []
 
 
 def get_post(post_id):

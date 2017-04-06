@@ -15,7 +15,8 @@ from annotator.annotator_util import get_need_tagged_text, save_as_ner_annotatio
 from SOKnowledge.ner_util.format_util import __labels__
 from annotator.form.sentence_type_annotation_form import SentenceTypeAnnotationForm
 from annotator.form.tagged_text_form import TaggedTextForm
-from annotator.query_util import get_post_tokenize_remove_tag_body_with_small_code_block, get_annotation
+from annotator.query_util import get_post_tokenize_remove_tag_body_with_small_code_block, get_annotation, \
+    get_all_large_code_block
 from models import TokenizeRemovetagbodyForRemoveTagPostsBody, Posts, SentenceTypeAnnotation
 
 BEFORE_ANSWER = -1
@@ -154,6 +155,7 @@ def sentences_annotator_question(request, question_index):
                 reverse('annotator:sentences_annotator_question', kwargs={'question_index': question_index}))
 
     text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
+    code_block_list=get_all_large_code_block(post_id)
 
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
@@ -168,6 +170,7 @@ def sentences_annotator_question(request, question_index):
         'formset': formset,
         'postId': question_post.id,
         'text': text,
+        'code_block_list':code_block_list,
     })
 
 
@@ -199,7 +202,7 @@ def sentences_annotator_answer(request, question_index, answer_index):
                         kwargs={'question_index': question_index, 'answer_index': answer_index}))
 
     text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
-
+    code_block_list=get_all_large_code_block(post_id)
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
         formset = SentenceTypeAnnotationFormSet(instance=Posts.objects.get(id=post_id))
@@ -213,4 +216,5 @@ def sentences_annotator_answer(request, question_index, answer_index):
         'formset': formset,
         'postId': post_id,
         'text': text,
+        'code_block_list':code_block_list,
     })
