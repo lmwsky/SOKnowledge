@@ -106,3 +106,21 @@ class TokenizeCodeblockForPostsCodeBlock(models.Model):
 class NamedEntityAnnotation(models.Model):
     id = models.IntegerField(db_column='post_id', primary_key=True)  # Field name made lowercase.
     annotation_text = models.TextField(db_column='annotation_text', blank=True, null=True)  # Field name made lowercase.
+
+
+class SentenceType(models.Model):
+    id = models.IntegerField(db_column='id', primary_key=True)
+    name = models.TextField(db_column='type_name')
+    description = models.TextField(db_column='description')
+
+    def __str__(self):
+        return self.name
+
+
+class SentenceTypeAnnotation(models.Model):
+    id = models.IntegerField(db_column='id', primary_key=True)
+    post = models.ForeignKey(Posts, db_index=True)
+    sentence_index = models.IntegerField(db_column='sentence_index', db_index=True)
+    annotation_text = models.TextField(db_column='annotation_text', blank=True, null=True)  # Field name made lowercase.
+    sentence_type = models.ForeignKey(SentenceType)
+    valid = models.BooleanField(db_column='valid', default=False)

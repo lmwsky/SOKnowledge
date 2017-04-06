@@ -25,7 +25,7 @@
                         <a href={% url 'annotator:ner_annotator_question' index|add:question_post_list.start_index %}>
                     {% endif %}
                     {% if annotator_type == 2 %}
-                        <a href={% url 'annotator:sentence_annotator_question' index|add:question_post_list.start_index %}>
+                        <a href={% url 'annotator:sentences_annotator_question' index|add:question_post_list.start_index %}>
                     {% endif %}
                     <h4>
                         <small>{{ question_post.id }}</small>

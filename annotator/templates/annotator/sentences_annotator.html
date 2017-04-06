@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>Annotation for NER</title>
+    <title>Annotation for sentences type</title>
     <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
 
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
@@ -26,29 +26,29 @@
     <div class="page-header">
         {% if post_type == 1 %}
 
-            <h2>Annotation Question
+            <h2>Annotation Question For Sentence Type
                 <small>{{ postId }}</small>
             </h2>
         {% endif %}
         {% if post_type == 2 %}
 
-            <h2>Annotation Answer
+            <h2>Annotation Answer For Sentence Type
                 <small>{{ postId }}</small>
             </h2>
         {% endif %}
     </div>
     <div id="tagdescriptions">
-        <h3>Labels</h3>
-        {% for label in labels %}
+        <h3>Sentence Type</h3>
+        {% for type in sentence_type_list %}
             <h4>
-                <span class="label label-default {{ label.value }} tagged">{{ label.textLabel }}</span>
-                <span>{{ label.description }}</span>
+                <span class="label label-default {{ type.name }} tagged">{{ type.name }}</span>
+                <span>{{ type.description }}</span>
             </h4>
         {% endfor %}
     </div>
 
     <div>
-        <h3>please tag text below</h3>
+        <h3>please select type for text below</h3>
     </div>
     <div>
         <pre id="needed_tag_text">{{ text }}</pre>
@@ -59,18 +59,24 @@
     </div>
     <div>
         {% if post_type == 1 %}
-            <form role="form" method="POST" action={% url 'annotator:ner_annotator_question' question_index %}>
+            <form role="form" method="POST" action={% url 'annotator:sentences_annotator_question' question_index %}>
+                {{ formset.management_form }}
                 {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit"/>
+                {% for form in formset %}
+                    {{ form.as_table }}
+                {% endfor %}
+                <input type="submit" class="form-control"/>
             </form>
         {% endif %}
         {% if post_type == 2 %}
             <form role="form" method="POST"
-                  action={% url 'annotator:ner_annotator_answer' question_index answer_index %}>
+                  action={% url 'annotator:sentences_annotator_answer' question_index answer_index %}>
+                {{ formset.management_form }}
                 {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit"/>
+                {% for form in formset %}
+                    {{ form.as_table }}
+                {% endfor %}
+                <input type="submit" class="form-control"/>
             </form>
         {% endif %}
     </div>
@@ -79,33 +85,33 @@
         <div class="btn-group" role="group" aria-label="Next and previous">
             {% if question_index > 0 %}
                 <a class="btn btn-default saveclass" role="button"
-                   href={% url 'annotator:ner_annotator_question' question_index|add:-1 %}><span
+                   href={% url 'annotator:sentences_annotator_question' question_index|add:-1 %}><span
                         class="glyphicon glyphicon-chevron-left"
                         aria-hidden="true"></span>Previous Question</a>
             {% endif %}
 
             <a class="btn btn-default saveclass" role="button"
-               href={% url 'annotator:listing_question_for_annotator' 1 1 %}
+               href={% url 'annotator:listing_question_for_annotator' 1 2 %}
             >Show All Questions<span
                     class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
             ></span></a>
 
             <a class="btn btn-default saveclass" role="button"
-               href={% url 'annotator:ner_annotator_question' question_index|add:1 %}
+               href={% url 'annotator:sentences_annotator_question' question_index|add:1 %}
             >Next Question<span
                     class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
             ></span></a>
 
             {% if answer_index > 0 %}
                 <a class="btn btn-default saveclass" role="button"
-                   href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:-1 %}><span
+                   href={% url 'annotator:sentences_annotator_answer' question_index answer_index|add:-1 %}><span
                         class="glyphicon glyphicon-chevron-left"
                         aria-hidden="true"></span>Previous Answer</a>
             {% endif %}
 
             {% if answer_index < 0 %}
                 <a class="btn btn-default saveclass" role="button"
-                   href={% url 'annotator:ner_annotator_answer' question_index 0 %}
+                   href={% url 'annotator:sentences_annotator_answer' question_index 0 %}
                 >Show First Answer<span
                         class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
                 ></span></a>
@@ -113,13 +119,13 @@
 
 
             <a class="btn btn-default saveclass" role="button"
-               href={% url 'annotator:listing_answer_for_question_for_annotator' question_index 1 1 %}
+               href={% url 'annotator:listing_answer_for_question_for_annotator' question_index 1 2 %}
             >Show All Answers<span
                     class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
             ></span></a>
             {% if answer_index >= 0 %}
                 <a class="btn btn-default saveclass" role="button"
-                   href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:1 %}
+                   href={% url 'annotator:sentences_annotator_answer' question_index answer_index|add:1 %}
                 >Next Answer<span
                         class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
                 ></span></a>
@@ -133,15 +139,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $(function () {
-            not_tagged_text = $("#needed_tag_text").text();
-            $("#needed_tag_text").text("");
-            var textTagger = $("#needed_tag_text").textTagger(not_tagged_text, {{labels_data_for_js|safe}},
-                    function (userTaggedResult) {
-                        $("#tagged_text").text(userTaggedResult.nlpText);
-                        console.log(userTaggedResult);
-                    })
 
-        })
     })
 </script>

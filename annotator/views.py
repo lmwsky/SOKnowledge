@@ -1,72 +1,35 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import json
+from django import forms
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse
+from django.forms import formset_factory, modelformset_factory, inlineformset_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template import loader
 from django.urls import reverse
 
-from annotator.annotator_util import get_need_tagged_text, save_as_ner_annotation
+from annotator.annotator_util import get_need_tagged_text, save_as_ner_annotation, get_sentence_tye_annotations, \
+    __sentence_type_list__
 from SOKnowledge.ner_util.format_util import __labels__
+from annotator.form.sentence_type_annotation_form import SentenceTypeAnnotationForm
 from annotator.form.tagged_text_form import TaggedTextForm
 from annotator.query_util import get_post_tokenize_remove_tag_body_with_small_code_block, get_annotation
-from models import TokenizeRemovetagbodyForRemoveTagPostsBody, Posts
+from models import TokenizeRemovetagbodyForRemoveTagPostsBody, Posts, SentenceTypeAnnotation
+
+BEFORE_ANSWER = -1
+
+POST_TYPE_QUESTION = 1
+
+POST_TYPE_ANSWER = 2
 
 PER_PAGE = 25
 
 
-def index(request):
-    latest_posts_list = Posts.objects.all()[:10]
-    template = loader.get_template('annotator/index.html')
-    context = {
-        'latest_posts_list': latest_posts_list,
-    }
-    return HttpResponse(template.render(context, request))
-
-
-def post_detail(request, post_id):
-    post = get_object_or_404(Posts, pk=post_id)
-    tokenize_post = get_object_or_404(TokenizeRemovetagbodyForRemoveTagPostsBody, pk=post_id)
-    return render(request, 'annotator/detail.html', {'post': post, 'tokenize_post': tokenize_post})
-
-
-def ner_annotator(request, post_id):
-    text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
-
-    default_data = {'post_id': post_id, 'input_text': text}
-    form = TaggedTextForm(default_data)
-
-    return render(request, 'annotator/ner_annotator.html', {
-        'form': form,
-        'postId': post_id,
-        'labels': __labels__,
-        'labels_data_for_js': json.dumps(__labels__),
-        'text': text})
-
-
-def process_ner_annotator_question(request, question_index):
-    print 'first request.POST=', request.POST
-    print 'first question_index=', question_index
-
-    question_index = int(question_index)
-    answer_index = -1
-    if request.method == 'POST':
-        form = TaggedTextForm(request.POST)
-        print 'post=', request.POST
-        if form.is_valid():
-            text = form.cleaned_data['input_text']
-            post_id = form.cleaned_data['post_id']
-            save_as_ner_annotation(post_id, text)
-            return redirect(reverse('annotator:ner_annotator_question', args=[question_index, ]))
-
-    return HttpResponse("submit not ok")
-
-
 def ner_annotator_question(request, question_index):
     question_index = int(question_index)
-    answer_index = -1
+    answer_index = BEFORE_ANSWER
     if request.method == 'POST':
         form = TaggedTextForm(request.POST)
         if form.is_valid():
@@ -83,7 +46,7 @@ def ner_annotator_question(request, question_index):
     default_data = {'post_id': question_post.id, 'input_text': text}
     form = TaggedTextForm(default_data)
     return render(request, 'annotator/ner_annotator.html', {
-        'post_type': 1,
+        'post_type': POST_TYPE_QUESTION,
         'question_index': question_index,
         'answer_index': answer_index,
         'form': form,
@@ -91,22 +54,7 @@ def ner_annotator_question(request, question_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
-        'current_question_index': question_index,
-        'current_answer_index': -1
     })
-
-
-def process_ner_annotator_answer(request, question_index, answer_index):
-    question_index = int(question_index)
-    answer_index = int(answer_index)
-    if request.method == 'POST':
-        form = TaggedTextForm(request.POST)
-        if form.is_valid():
-            text = form.cleaned_data['input_text']
-            post_id = form.cleaned_data['post_id']
-            save_as_ner_annotation(post_id, text)
-            return redirect(reverse('annotator:ner_annotator_answer', args=[question_index, answer_index]))
-    return HttpResponse("submit not ok")
 
 
 def ner_annotator_answer(request, question_index, answer_index):
@@ -129,7 +77,7 @@ def ner_annotator_answer(request, question_index, answer_index):
     form = TaggedTextForm(default_data)
 
     return render(request, 'annotator/ner_annotator.html', {
-        'post_type': 2,
+        'post_type': POST_TYPE_ANSWER,
         'question_index': question_index,
         'answer_index': answer_index,
         'form': form,
@@ -137,8 +85,6 @@ def ner_annotator_answer(request, question_index, answer_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
-        'current_question_index': question_index,
-        'current_answer_index': answer_index
     })
 
 
@@ -179,4 +125,92 @@ def listing_answer_for_question_for_annotator(request, question_index, page, ann
         'question_index': question_index,
         'answer_post_list': answer_post_sub_list,
         'annotator_type': annotator_type
+    })
+
+
+def sentences_annotator_question(request, question_index):
+    question_index = int(question_index)
+    answer_index = BEFORE_ANSWER
+    question_post = Posts.objects.filter(posttypeid=1)[question_index]
+    post_id = question_post.id
+
+    SentenceTypeAnnotationFormSet = inlineformset_factory(Posts, SentenceTypeAnnotation,
+                                                          extra=0,
+                                                          can_delete=False,
+                                                          form=SentenceTypeAnnotationForm,
+                                                          fields=('annotation_text', 'sentence_type'),
+
+                                                          )
+
+    if request.method == 'POST':
+        formset = SentenceTypeAnnotationFormSet(request.POST, request.FILES, instance=question_post)
+        if formset.is_valid():
+            for form in formset:
+                annotation = form.save(commit=False)
+                annotation.valid = True
+                annotation.save()
+
+            return redirect(
+                reverse('annotator:sentences_annotator_question', kwargs={'question_index': question_index}))
+
+    text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
+
+    sentence_type_annotations = get_sentence_tye_annotations(post_id)
+    if sentence_type_annotations:
+        formset = SentenceTypeAnnotationFormSet(instance=Posts.objects.get(id=post_id))
+    else:
+        raise Http404('post is not exist')
+    return render(request, 'annotator/sentences_annotator.html', {
+        'post_type': POST_TYPE_QUESTION,
+        'sentence_type_list': __sentence_type_list__,
+        'question_index': question_index,
+        'answer_index': answer_index,
+        'formset': formset,
+        'postId': question_post.id,
+        'text': text,
+    })
+
+
+def sentences_annotator_answer(request, question_index, answer_index):
+    question_index = int(question_index)
+    answer_index = int(answer_index)
+    question_post = Posts.objects.filter(posttypeid=1)[question_index]
+    answer_post = Posts.objects.filter(parentid=question_post.id)[answer_index]
+    post_id = answer_post.id
+
+    SentenceTypeAnnotationFormSet = inlineformset_factory(Posts, SentenceTypeAnnotation,
+                                                          extra=0,
+                                                          can_delete=False,
+                                                          form=SentenceTypeAnnotationForm,
+                                                          fields=('annotation_text', 'sentence_type'),
+
+                                                          )
+
+    if request.method == 'POST':
+        formset = SentenceTypeAnnotationFormSet(request.POST, request.FILES, instance=question_post)
+        if formset.is_valid():
+            for form in formset:
+                annotation = form.save(commit=False)
+                annotation.valid = True
+                annotation.save()
+
+            return redirect(
+                reverse('annotator:sentences_annotator_question',
+                        kwargs={'question_index': question_index, 'answer_index': answer_index}))
+
+    text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
+
+    sentence_type_annotations = get_sentence_tye_annotations(post_id)
+    if sentence_type_annotations:
+        formset = SentenceTypeAnnotationFormSet(instance=Posts.objects.get(id=post_id))
+    else:
+        raise Http404('post is not exist')
+    return render(request, 'annotator/sentences_annotator.html', {
+        'post_type': POST_TYPE_ANSWER,
+        'sentence_type_list': __sentence_type_list__,
+        'question_index': question_index,
+        'answer_index': answer_index,
+        'formset': formset,
+        'postId': post_id,
+        'text': text,
     })
