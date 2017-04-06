@@ -15,9 +15,24 @@ Including another URLconf
 """
 from django.conf.urls import url
 from . import views
+
 app_name = 'annotator'
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^(?P<post_id>[0-9]+)/$', views.post_detail, name='post_detail'),
+    url(r'^ner/(?P<question_index>[0-9]+)/question$', views.ner_annotator_question, name='ner_annotator_question'),
+    url(r'^sentences_annotator/(?P<question_index>[0-9]+)/question$', views.sentences_annotator_question,
+        name='sentences_annotator_question'),
+
+    url(r'^ner/(?P<question_index>[0-9]+)/(?P<answer_index>[0-9]+)/answer$', views.ner_annotator_answer,
+        name='ner_annotator_answer'),
+    url(r'^sentences_annotator/(?P<question_index>[0-9]+)/(?P<answer_index>[0-9]+)/answer$',
+        views.sentences_annotator_answer,
+        name='sentences_annotator_answer'),
+    url(r'^question/page/(?P<page>[0-9]+)/(?P<annotator_type>[1-2])$', views.listing_question_for_annotator,
+        name='listing_question_for_annotator'),
+    url(
+        r'^question/(?P<question_index>[0-9]+)/answer/page/(?P<page>[0-9]+)/(?P<annotator_type>[1-2])$',
+        views.listing_answer_for_question_for_annotator,
+        name='listing_answer_for_question_for_annotator'),
+
 ]

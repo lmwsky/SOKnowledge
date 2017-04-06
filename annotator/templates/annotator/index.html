@@ -1,9 +1,0 @@
-{% if latest_posts_list %}
-    <ul>
-    {% for post in latest_posts_list %}
-        <li><a href={% url 'annotator:post_detail' post.id %}>{{ post.body }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No posts are available.</p>
-{% endif %}

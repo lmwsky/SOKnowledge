@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'annotator.apps.AnnotatorConfig',
+    'tagger.apps.TaggerConfig',
+    'index.apps.IndexConfig',
+
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,8 @@
 import codecs
 import os
 
-from annotator.data_set_util import get_data_set_group, build_conll_fomat_for_sentences
+from annotator.data_set_util import get_data_set_group
+from SOKnowledge.ner_util.format_util import build_conll_format_for_sentences
 from annotator.label_data_builder import build_code_tagger_data_for_sentence, build_code_tagger_data_for_whole_post
 from annotator.models import CodeBlockWithTokenizeCode
 from annotator.query_util import get_question_list, get_post_text, \
@@ -76,7 +77,7 @@ def export_code_block_ner_data_set(
                         answer_count = 0
                     for answer in answer_list:
                         get_code_block_tag_for_one_post(answer, post_text_type, tags_list, words_list)
-                    output.write(build_conll_fomat_for_sentences(words_list, tags_list))
+                    output.write(build_conll_format_for_sentences(words_list, tags_list))
                     output.write("\n\n")
                     question_num += 1
                     count_questions[group] += 1

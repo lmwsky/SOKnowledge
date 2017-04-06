@@ -4,7 +4,9 @@ import codecs
 import os
 
 from SOKnowledge.data_processor.scripts.nlp_util import word_tokenize_nltk
-from annotator.models import Posts, CodeBlockWithTokenizeCode, TokenizeRemovetagbodyForRemoveTagPostsBody
+from annotator.models import Posts, CodeBlockWithTokenizeCode, TokenizeRemovetagbodyForRemoveTagPostsBody, \
+    NamedEntityAnnotation
+from annotator.update_data import update_code_continue_problem_for_text
 
 
 def get_all_answer(question_id):
@@ -47,6 +49,14 @@ def get_all_large_code_block(post_id):
             type=CodeBlockWithTokenizeCode.LARGE_CODE_BLOCK)
     except Exception, error:
         return []
+
+def get_all_large_code_block(post_id):
+    try:
+        return CodeBlockWithTokenizeCode.objects.filter(parent_id=post_id).filter(
+            type=CodeBlockWithTokenizeCode.LARGE_CODE_BLOCK)
+    except Exception, error:
+        return []
+
 
 def get_post(post_id):
     return Posts.objects.get(id=post_id)
@@ -209,3 +219,28 @@ def generate_corpus_with_all_code_block(output_file_name, output_file_path, offs
                 print error
 
     print 'export ', offset, '-', offset + num
+
+
+def get_annotation(post_id):
+    try:
+        annotation = NamedEntityAnnotation.objects.get(id=post_id)
+        if annotation:
+            return annotation
+        else:
+            return None
+    except Exception, error:
+        return None
+
+
+def update_code_continue_problem(start, end):
+    body_list = TokenizeRemovetagbodyForRemoveTagPostsBody.objects.all()[start:end]
+
+    for body in body_list:
+        if body.tokenize_text:
+            body.tokenize_text = update_code_continue_problem_for_text(body.tokenize_text)
+            body.save()
+
+
+def update_db_code_continue_problem(start=0, max_num=100, step=100):
+    for offset in range(start, max_num, step):
+        update_code_continue_problem(offset, offset + step)

@@ -1,4 +1,4 @@
-"""SOKnowledge URL Configuration
+"""annotator URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -13,12 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
+from . import views
+app_name = 'tagger'
 
 urlpatterns = [
-    url(r'^index/', include('index.urls')),
-    url(r'^annotator/', include('annotator.urls')),
-    url(r'^tagger/', include('tagger.urls')),
-    url(r'^admin/', admin.site.urls),
+    url(r'^ner_tagger/$', views.ner_tagger, name='ner_tagger'),
+    url(r'^ner_tagger/(?P<text>[\s\S]+)/result/$', views.ner_tagger_result, name='ner_tagger_result'),
+
 ]
