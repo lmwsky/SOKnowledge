@@ -46,6 +46,8 @@ def ner_annotator_question(request, question_index):
 
     default_data = {'post_id': question_post.id, 'input_text': text}
     form = TaggedTextForm(default_data)
+    code_block_list=get_all_large_code_block(post_id)
+
     return render(request, 'annotator/ner_annotator.html', {
         'post_type': POST_TYPE_QUESTION,
         'question_index': question_index,
@@ -55,6 +57,7 @@ def ner_annotator_question(request, question_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
+        'code_block_list':code_block_list,
     })
 
 
@@ -77,6 +80,8 @@ def ner_annotator_answer(request, question_index, answer_index):
     default_data = {'post_id': post_id, 'input_text': text}
     form = TaggedTextForm(default_data)
 
+    code_block_list=get_all_large_code_block(post_id)
+
     return render(request, 'annotator/ner_annotator.html', {
         'post_type': POST_TYPE_ANSWER,
         'question_index': question_index,
@@ -86,6 +91,7 @@ def ner_annotator_answer(request, question_index, answer_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
+        'code_block_list':code_block_list,
     })
 
 
