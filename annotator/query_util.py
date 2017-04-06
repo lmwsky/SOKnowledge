@@ -41,6 +41,12 @@ def get_all_small_code_block(post_id):
     except Exception, error:
         return []
 
+def get_all_large_code_block(post_id):
+    try:
+        return CodeBlockWithTokenizeCode.objects.filter(parent_id=post_id).filter(
+            type=CodeBlockWithTokenizeCode.LARGE_CODE_BLOCK)
+    except Exception, error:
+        return []
 
 def get_post(post_id):
     return Posts.objects.get(id=post_id)
@@ -96,6 +102,25 @@ POST_TEXT_TYPE_HTML = 0
 POST_TEXT_TYPE_TOKENIZE_NO_CODE_BLOCK = 1
 POST_TEXT_TYPE_TOKENIZE_WITH_SMALL_CODE_BLOCK = 2
 POST_TEXT_TYPE_TOKENIZE_WITH_ALL_CODE_BLOCK = 3
+POST_TEXT_TYPE_TOKENIZE_WITH_ONLY_LARGE_CODE_BLOCK=4
+
+
+def get_post_tokenize_remove_tag_body_only_large_code_block(post_id):
+    try:
+        tokenize_post_body = TokenizeRemovetagbodyForRemoveTagPostsBody.objects.get(id=post_id)
+        if tokenize_post_body:
+            text = tokenize_post_body.tokenize_text
+            code_block_list = get_all_large_code_block(post_id)
+            if code_block_list is []:
+                return None
+            for code_block in code_block_list:
+                text = text.replace(code_block.code_block_name, code_block.tokenize_text)
+            return text
+        else:
+            return None
+
+    except Exception, error:
+        return None
 
 
 def get_post_text(post, post_text_type=POST_TEXT_TYPE_TOKENIZE_WITH_SMALL_CODE_BLOCK):
@@ -108,6 +133,8 @@ def get_post_text(post, post_text_type=POST_TEXT_TYPE_TOKENIZE_WITH_SMALL_CODE_B
             return get_post_tokenize_remove_tag_body_with_small_code_block(post.id)
         if post_text_type == POST_TEXT_TYPE_TOKENIZE_WITH_ALL_CODE_BLOCK:
             return get_post_tokenize_remove_tag_body_with_all_code_block(post.id)
+        if post_text_type == POST_TEXT_TYPE_TOKENIZE_WITH_ONLY_LARGE_CODE_BLOCK:
+            return get_post_tokenize_remove_tag_body_only_large_code_block(post.id)
     return None
 
 
