@@ -165,7 +165,7 @@ def sentences_annotator_question(request, question_index):
 
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
-        formset = SentenceTypeAnnotationFormSet(instance=Posts.objects.get(id=post_id))
+        formset = SentenceTypeAnnotationFormSet(instance=question_post)
     else:
         raise Http404('post is not exist')
     return render(request, 'annotator/sentences_annotator.html', {
@@ -196,7 +196,7 @@ def sentences_annotator_answer(request, question_index, answer_index):
                                                           )
 
     if request.method == 'POST':
-        formset = SentenceTypeAnnotationFormSet(request.POST, request.FILES, instance=question_post)
+        formset = SentenceTypeAnnotationFormSet(request.POST, request.FILES, instance=answer_post)
         if formset.is_valid():
             for form in formset:
                 annotation = form.save(commit=False)
@@ -204,14 +204,14 @@ def sentences_annotator_answer(request, question_index, answer_index):
                 annotation.save()
 
             return redirect(
-                reverse('annotator:sentences_annotator_question',
+                reverse('annotator:sentences_annotator_answer',
                         kwargs={'question_index': question_index, 'answer_index': answer_index}))
 
     text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
     code_block_list=get_all_large_code_block(post_id)
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
-        formset = SentenceTypeAnnotationFormSet(instance=Posts.objects.get(id=post_id))
+        formset = SentenceTypeAnnotationFormSet(instance=answer_post)
     else:
         raise Http404('post is not exist')
     return render(request, 'annotator/sentences_annotator.html', {
