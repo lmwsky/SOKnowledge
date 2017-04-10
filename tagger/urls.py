@@ -20,5 +20,7 @@ app_name = 'tagger'
 urlpatterns = [
     url(r'^ner_tagger/$', views.ner_tagger, name='ner_tagger'),
     url(r'^ner_tagger/(?P<text>[\s\S]+)/result/$', views.ner_tagger_result, name='ner_tagger_result'),
+    url(r'^cbr_tagger/$', views.code_block_tagger, name='code_block_tagger'),
+    url(r'^cbr_tagger/(?P<text>[\s\S]+)/result/$', views.code_block_tagger_result, name='code_block_tagger_result'),
 
 ]

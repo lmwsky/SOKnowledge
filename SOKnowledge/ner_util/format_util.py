@@ -20,6 +20,11 @@ __labels__ = [
      'value': 'standard',
      },
 ]
+__code_block_labels__ = [
+    {'textLabel': 'LARGECODE',
+     'description': 'large code block in th text',
+     'value': 'api',
+     }, ]
 
 
 def parse_from_tag_format_to_se_format(text, label_list=__labels__):
@@ -57,8 +62,8 @@ def build_html_format_for_sentences(words_list, tags_list):
     return "\n\n".join([build_html_format_for_sentence(words, tags) for words, tags in zip(words_list, tags_list)])
 
 
-def build_se_format_for_sentences(words_list, tags_list):
-    return "\n\n".join([build_se_format_for_sentence(words, tags) for words, tags in zip(words_list, tags_list)])
+def build_se_format_for_sentences(words_list, tags_list, label_list=__labels__):
+    return "\n\n".join([build_se_format_for_sentence(words, tags,label_list) for words, tags in zip(words_list, tags_list)])
 
 
 def build_html_format_for_sentence(words, tags):

@@ -9,3 +9,7 @@ SOKnowledge/tagger/models/
 
 /SOKnowledge/db/so-parser.log
 /annotator/test/
+/SOKnowledge/ctr_util/model/trainModel.txt
+/SOKnowledge/ctr_util/model/feature_words.txt
+/SOKnowledge/ner_util/models/large_code_block_tagger/
+/SOKnowledge/ner_util/models/so_for_epochs50_splitwords/
