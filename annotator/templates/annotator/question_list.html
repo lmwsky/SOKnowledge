@@ -4,40 +4,42 @@
     <div class="panel panel-default">
         <div class="panel-heading">Question List</div>
         <table class="table table-bordered">
-        <tr>
-                        <td>ID</td>
-                        <td>title</td>
-                        <td>tags</td>
-                        <td>acceptedanswerid</td>
-                        <td>question_post.score</td>
+            <tr>
+                <td>ID</td>
+                <td>title</td>
+                <td>tags</td>
+                <td>acceptedanswerid</td>
+                <td>question_post.score</td>
 
-                        <td>viewcount</td>
-                        <td>answercount</td>
-                        <td>creationdate</td>
+                <td>viewcount</td>
+                <td>answercount</td>
+                <td>creationdate</td>
 
-                            </tr>
+            </tr>
             {% for question_post in question_post_list %}
                 {% with index=forloop.counter0|add:-1 %}
-                        {% if annotator_type == 1 %}
-                            <tr class='clickable-row' data-href={% url 'annotator:ner_annotator_question' index|add:question_post_list.start_index %}>
-                        {% endif %}
-                        {% if annotator_type == 2 %}
-                            <tr class='clickable-row' data-href={% url 'annotator:sentences_annotator_question' index|add:question_post_list.start_index %}>
-                        {% endif %}
+                    {% if annotator_type == 1 %}
+                        <tr class='clickable-row'
+                            data-href={% url 'annotator:ner_annotator_question' index|add:question_post_list.start_index %}>
+                    {% endif %}
+                {% if annotator_type == 2 %}
+                    <tr class='clickable-row'
+                        data-href={% url 'annotator:sentences_annotator_question' index|add:question_post_list.start_index %}>
+                {% endif %}
 
 
-                        <td>{{ question_post.id }}</td>
-                        <td>{{ question_post.title }}</td>
-                        <td>{{ question_post.tags }}</td>
-                        <td>{{ question_post.acceptedanswerid }}</td>
-                        <td>{{ question_post.score }}</td>
+                <td>{{ question_post.id }}</td>
+                <td>{{ question_post.title }}</td>
+                <td>{{ question_post.tags }}</td>
+                <td>{{ question_post.acceptedanswerid }}</td>
+                <td>{{ question_post.score }}</td>
 
-                        <td>{{ question_post.viewcount }}</td>
-                        <td>{{ question_post.answercount }}</td>
-                        <td>{{ question_post.creationdate }}</td>
+                <td>{{ question_post.viewcount }}</td>
+                <td>{{ question_post.answercount }}</td>
+                <td>{{ question_post.creationdate }}</td>
 
 
-                            </tr>
+                </tr>
                 {% endwith %}
             {% endfor %}
         </table>
@@ -67,7 +69,7 @@
 {% block extra_js %}
     <script type="text/javascript">
         $(document).ready(function () {
-            $(".clickable-row").click(function() {
+            $(".clickable-row").click(function () {
                 console.log("click");
                 window.location = $(this).data("href");
             });
