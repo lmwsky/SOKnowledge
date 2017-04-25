@@ -3,30 +3,33 @@
 {% block content %}
     <div class="panel panel-default">
         <div class="panel-heading">Answer List</div>
-        <ul class="list-group">
+        <table class="table table-bordered">
+            <tr>
+                <td>ID</td>
+                <td>score</td>
+                <td>creationdate</td>
+
+            </tr>
             {% for answer_post in answer_post_list %}
                 {% with index=forloop.counter0|add:-1 %}
-                    <li class="list-group-item">
-                        {% if annotator_type == 1 %}
-
-                            <a href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
-                        {% endif %}
-                        {% if annotator_type == 2 %}
-
-                            <a href={% url 'annotator:sentences_annotator_answer' question_index index|add:answer_post_list.start_index %}>
-                        {% endif %}
-
-                        <h4>
-                            <small>{{ answer_post.id }}</small>
-                            <strong> score:{{ answer_post.score }}</strong>
-                        </h4>
-                        </a>
-                    </li>
+                    {% if annotator_type == 1 %}
+                        <tr class='clickable-row'
+                            data-href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                    {% endif %}
+                {% if annotator_type == 2 %}
+                    <tr class='clickable-row'
+                        data-href={% url 'annotator:sentences_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                {% endif %}
                 {% endwith %}
-            {% endfor %}
-        </ul>
-    </div>
 
+            <td>{{ answer_post.id }}</td>
+            <td>{{ answer_post.score }}</td>
+            <td>{{ answer_post.creationdate }}</td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
     <div class="pagination">
         <ul class="pager">
             {% if answer_post_list.has_previous %}
@@ -46,4 +49,14 @@
             {% endif %}
         </ul>
     </div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".clickable-row").click(function () {
+                console.log("click");
+                window.location = $(this).data("href");
+            });
+        })
+    </script>
 {% endblock %}
