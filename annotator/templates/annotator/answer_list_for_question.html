@@ -8,7 +8,7 @@
                 <td>ID</td>
                 <td>score</td>
                 <td>creationdate</td>
-
+                <td>accepted</td>
             </tr>
             {% for answer_post in answer_post_list %}
                 {% with index=forloop.counter0|add:-1 %}
@@ -20,11 +20,19 @@
                     <tr class='clickable-row'
                         data-href={% url 'annotator:sentences_annotator_answer' question_index index|add:answer_post_list.start_index %}>
                 {% endif %}
-                {% endwith %}
 
-            <td>{{ answer_post.id }}</td>
-            <td>{{ answer_post.score }}</td>
-            <td>{{ answer_post.creationdate }}</td>
+                    <td>{{ answer_post.id }}</td>
+                    <td>{{ answer_post.score }}</td>
+                    <td>{{ answer_post.creationdate }}</td>
+                    
+                    {% if answer_post.id == accepted_id %}
+                        <td>True</td>
+                    {% else %}
+                        <td></td>
+
+                    {% endif %}
+
+                {% endwith %}
 
             </tr>
             {% endfor %}

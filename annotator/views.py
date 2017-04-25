@@ -46,7 +46,7 @@ def ner_annotator_question(request, question_index):
 
     default_data = {'post_id': question_post.id, 'input_text': text}
     form = TaggedTextForm(default_data)
-    code_block_list=get_all_large_code_block(post_id)
+    code_block_list = get_all_large_code_block(post_id)
 
     return render(request, 'annotator/ner_annotator.html', {
         'post_type': POST_TYPE_QUESTION,
@@ -57,7 +57,7 @@ def ner_annotator_question(request, question_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
-        'code_block_list':code_block_list,
+        'code_block_list': code_block_list,
     })
 
 
@@ -80,7 +80,7 @@ def ner_annotator_answer(request, question_index, answer_index):
     default_data = {'post_id': post_id, 'input_text': text}
     form = TaggedTextForm(default_data)
 
-    code_block_list=get_all_large_code_block(post_id)
+    code_block_list = get_all_large_code_block(post_id)
 
     return render(request, 'annotator/ner_annotator.html', {
         'post_type': POST_TYPE_ANSWER,
@@ -91,7 +91,7 @@ def ner_annotator_answer(request, question_index, answer_index):
         'labels': __labels__,
         'labels_data_for_js': json.dumps(__labels__),
         'text': text,
-        'code_block_list':code_block_list,
+        'code_block_list': code_block_list,
     })
 
 
@@ -128,10 +128,13 @@ def listing_answer_for_question_for_annotator(request, question_index, page, ann
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         answer_post_sub_list = paginator.page(paginator.num_pages)
+
+
     return render(request, 'annotator/answer_list_for_question.html', {
         'question_index': question_index,
         'answer_post_list': answer_post_sub_list,
-        'annotator_type': annotator_type
+        'annotator_type': annotator_type,
+        'accepted_id': question_post.acceptedanswerid
     })
 
 
@@ -161,7 +164,7 @@ def sentences_annotator_question(request, question_index):
                 reverse('annotator:sentences_annotator_question', kwargs={'question_index': question_index}))
 
     text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
-    code_block_list=get_all_large_code_block(post_id)
+    code_block_list = get_all_large_code_block(post_id)
 
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
@@ -176,7 +179,7 @@ def sentences_annotator_question(request, question_index):
         'formset': formset,
         'postId': question_post.id,
         'text': text,
-        'code_block_list':code_block_list,
+        'code_block_list': code_block_list,
     })
 
 
@@ -208,7 +211,7 @@ def sentences_annotator_answer(request, question_index, answer_index):
                         kwargs={'question_index': question_index, 'answer_index': answer_index}))
 
     text = get_post_tokenize_remove_tag_body_with_small_code_block(post_id)
-    code_block_list=get_all_large_code_block(post_id)
+    code_block_list = get_all_large_code_block(post_id)
     sentence_type_annotations = get_sentence_tye_annotations(post_id)
     if sentence_type_annotations:
         formset = SentenceTypeAnnotationFormSet(instance=answer_post)
@@ -222,5 +225,5 @@ def sentences_annotator_answer(request, question_index, answer_index):
         'formset': formset,
         'postId': post_id,
         'text': text,
-        'code_block_list':code_block_list,
+        'code_block_list': code_block_list,
     })
