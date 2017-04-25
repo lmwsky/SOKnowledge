@@ -17,8 +17,8 @@ from SOKnowledge.ner_util.format_util import __labels__, build_conll_format_for_
     build_se_format_for_sentences, __code_block_labels__
 from tagger.form.code_block_tagger_form import CodeBlockTaggerForm
 
-__is_load_ner_tagger__=True
-__is_load_cbr_tagger__=True
+__is_load_ner_tagger__=False
+__is_load_cbr_tagger__=False
 __ner_tagger__ = NERTagger()
 if __is_load_ner_tagger__:
     __ner_tagger__.load_model(os.path.join(BASE_DIR, 'SOKnowledge/ner_util', 'models/so_for_epochs50_splitwords'))
@@ -26,9 +26,6 @@ if __is_load_ner_tagger__:
 __code_block_tagger__ = NERTagger()
 if __is_load_cbr_tagger__:
     __code_block_tagger__.load_model(os.path.join(BASE_DIR, 'SOKnowledge/ner_util', 'models/large_code_block_tagger'))
-
-__code_block_type_tagger__ = CodeBlockTypeTagger()
-#__code_block_type_tagger__.init_model_bays()
 
 
 def ner_tagger(request):
@@ -97,10 +94,8 @@ def code_block_type_tagger(request):
 
 
 def code_block_type_tagger_result(request, text):
-    print text
-    code_block_type_list = __code_block_type_tagger__.tag(text)
-    print code_block_type_list
-
+    # code_block_type_list = __code_block_type_tagger__.tag(text)
+    code_block_type_list=[]
     return render(request, 'tagger/code_block_type_tagger_result.html',
                   {'original_text': text,
                    'labels': __code_block_labels__,
