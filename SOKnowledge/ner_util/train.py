@@ -247,7 +247,7 @@ class NERTaggerTrainer(object):
                               word_lstm_dim=100,
                               word_bidirect=1,
                               pre_emb="",
-                              all_emb=1,
+                              all_emb=0,
                               cap_dim=1,
                               crf=1,
                               dropout=0.5,
@@ -357,7 +357,7 @@ class NERTaggerTrainer(object):
         self.dico_tags = dico_tags
         self.id_to_tag = id_to_tag
 
-    def train(self, n_epochs=50, freq_eval=10000):
+    def train(self, n_epochs=50, freq_eval=10000,best_dev=-np.inf,best_test=-np.inf):
         """
         Train network
         :param n_epochs: number of epochs over the training set
@@ -368,8 +368,6 @@ class NERTaggerTrainer(object):
         #
         #
 
-        best_dev = -np.inf
-        best_test = -np.inf
         count = 0
         for epoch in xrange(n_epochs):
             epoch_costs = []
@@ -379,7 +377,7 @@ class NERTaggerTrainer(object):
                 input = create_input(self.train_data[index], self.parameters, True, self.singletons)
                 new_cost = self.f_train(*input)
                 epoch_costs.append(new_cost)
-                if i % 60 == 0 and i > 0 == 0:
+                if i % 50 == 0 and i > 0 == 0:
                     print "%i, cost average: %f" % (i, np.mean(epoch_costs[-50:]))
                 if count % freq_eval == 0:
                     dev_score = evaluate(self.parameters, self.f_eval, self.dev_sentences,
@@ -401,15 +399,21 @@ class NERTaggerTrainer(object):
 
 if __name__ == "__main__":
     trainer = NERTaggerTrainer()
-#    trainer.init_model_parameters(train_set_location="corpus/train_12010000_12020000_full_tag_code_block_ner.txt",
-#                                  dev_set_location="corpus/dev_12010000_12020000_full_tag_code_block_ner.txt",
-#                                  test_set_location="corpus/test_12010000_12020000_full_tag_code_block_ner.txt",
-#                                  pre_emb="corpus/replace_large_code_block/word_embedding.txt"
-#                                  )
-#    trainer.init_model("code_block_tagger")
-    trainer.init_model_parameters_from_disk('models/code_block_tagger')
-    trainer.init_training_data_for_retraining(train_set_location="corpus/train_12010000_12020000_full_tag_code_block_ner.txt",
-                               dev_set_location="corpus/dev_12010000_12020000_full_tag_code_block_ner.txt",
-                               test_set_location="corpus/test_12010000_12020000_full_tag_code_block_ner.txt"
+    """
+    trainer.init_model_parameters(train_set_location="corpus/large_code_block_tagged/train_12000000_12008000__only_label_large_code_block__large_code_block_ner.txt",
+                                  dev_set_location="corpus/large_code_block_tagged/dev_12000000_12008000__only_label_large_code_block__large_code_block_ner.txt",
+                                  test_set_location="corpus/large_code_block_tagged/test_12000000_12008000__only_label_large_code_block__large_code_block_ner.txt",
+                                  pre_emb="corpus/replace_large_code_block/word_embedding.txt"
+                                  )
+    trainer.init_model("large_code_block_tagger")
+
+    """
+
+
+    trainer.init_model_parameters_from_disk('models/large_code_block_tagger')
+    trainer.init_training_data_for_retraining(train_set_location="corpus/large_code_block_tagged/train_11002000_11004000__only_label_large_code_block__large_code_block_ner.txt",
+                               dev_set_location="corpus/large_code_block_tagged/dev_12000000_12008000__only_label_large_code_block__large_code_block_ner.txt",
+                               test_set_location="corpus/large_code_block_tagged/test_11000000_11002000__only_label_large_code_block__large_code_block_ner.txt"
                                 )
-    trainer.train(n_epochs=20, freq_eval=5000)
+
+    trainer.train(n_epochs=20, freq_eval=3000,best_dev=17.75000,best_test=0)

@@ -244,3 +244,4 @@ def update_code_continue_problem(start, end):
 def update_db_code_continue_problem(start=0, max_num=100, step=100):
     for offset in range(start, max_num, step):
         update_code_continue_problem(offset, offset + step)
+        print 'done ',offset,'-',offset+step
