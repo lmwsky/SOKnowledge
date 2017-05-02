@@ -2,11 +2,11 @@
 {% load static %}
 {% block local_css %}
     <link rel="stylesheet" href="{% static 'annotator/my_style.css' %}"/>{% endblock %}
-
+{% block page_title %}code block type classifier{% endblock %}
 {% block content %}
     <div class="container">
         <div class="page-header">
-            <h2>please enter the text for named entity recognition</h2>
+            <h2>please enter the text for code block type classifier</h2>
         </div>
 
         <form action="." method="POST" role="form">
