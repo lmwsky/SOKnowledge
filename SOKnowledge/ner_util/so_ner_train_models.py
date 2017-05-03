@@ -5,12 +5,10 @@ if __name__ == "__main__":
 
     for i in range(0,10):
         trainer = NERTaggerTrainer()
-        train_set_location = "corpus/so_ner/{0}/S3train{1}.conll".format(i, i)
-        dev_set_location = "corpus/so_ner/{0}/S3dev{1}.conll".format(i, i)
-        test_set_location = "corpus/so_ner/{0}/S3test{1}.conll".format(i, i)
+        train_set_location = "corpus/so_ner/dataSet3/{0}/S3train{1}.conll".format(i, i)
+        dev_set_location = "corpus/so_ner/dataSet3/{0}/S3dev{1}.conll".format(i, i)
+        test_set_location = "corpus/so_ner/dataSet3/{0}/S3test{1}.conll".format(i, i)
 
-        dev_set_location = "corpus/so_ner/0/S3dev0.conll"
-        test_set_location = "corpus/so_ner/0/S3test0.conll"
         pre_emb = "corpus/replace_large_code_block/word_embedding.txt"
 
         trainer.init_model_parameters(train_set_location=train_set_location,
