@@ -3,7 +3,7 @@
 from train import NERTaggerTrainer
 if __name__ == "__main__":
 
-    for i in range(0,10):
+    for i in range(1,10):
         trainer = NERTaggerTrainer()
         train_set_location = "corpus/so_ner/dataSet3/{0}/S3train{1}.conll".format(i, i)
         dev_set_location = "corpus/so_ner/dataSet3/{0}/S3dev{1}.conll".format(i, i)
@@ -27,6 +27,6 @@ if __name__ == "__main__":
 
         print "-----------------------------"
         print "Model{0} training finish".format(str(i))
-        print "best_dev:"+best_dev
-        print "best_test:"+best_test
+        print "best_dev:",str(best_dev)
+        print "best_test:",str(best_test)
         print "-----------------------------"

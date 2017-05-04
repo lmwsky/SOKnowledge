@@ -9,6 +9,6 @@ if __name__ == "__main__":
                                   test_set_location="corpus/so_ner/0/S3test0.conll",
                                   pre_emb="corpus/replace_large_code_block/word_embedding.txt"
                                   )
-    trainer.init_model("SO_LSTM_CRF0")
+    trainer.init_model("SO_LSTM_CRF0_Head_end")
     #trainer.train(n_epochs=20, freq_eval=1000,best_dev=17.75000,best_test=0)
     trainer.train(n_epochs=50, freq_eval=300)
