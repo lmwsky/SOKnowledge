@@ -27,7 +27,7 @@ if __name__ == "__main__":
                                       pre_emb=pre_emb
                                       )
         trainer.init_model(model_name)
-        best_dev, best_test = trainer.train(n_epochs=50, freq_eval=300)
+        best_dev, best_test = trainer.train(n_epochs=40, freq_eval=300)
 
         print "-----------------------------"
         print "Model{0} training finish".format(str(i))
