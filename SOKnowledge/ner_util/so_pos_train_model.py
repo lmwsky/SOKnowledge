@@ -13,7 +13,7 @@ if __name__ == "__main__":
     print  "devset:", dev_set_location
     print "test:", test_set_location
     print "pre_emb:", pre_emb
-    model_name = "SO_LSTM_CRF_POS"
+    model_name = "SO_LSTM_CRF_POS_ep_100_freq_100"
     
     trainer.init_model_parameters(train_set_location=train_set_location,
                                   dev_set_location=dev_set_location,
@@ -21,7 +21,7 @@ if __name__ == "__main__":
                                   pre_emb=pre_emb
                                   )
     trainer.init_model(model_name)
-    best_dev, best_test = trainer.train(n_epochs=50, freq_eval=300)
+    best_dev, best_test = trainer.train(n_epochs=100, freq_eval=100)
 
     print "-----------------------------"
     print "best_dev:", str(best_dev)
