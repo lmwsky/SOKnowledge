@@ -24,7 +24,8 @@ if __name__ == "__main__":
         trainer.init_model_parameters(train_set_location=train_set_location,
                                       dev_set_location=dev_set_location,
                                       test_set_location=test_set_location,
-                                      pre_emb=pre_emb
+                                      pre_emb=pre_emb,
+                                      word_dim=50
                                       )
         trainer.init_model(model_name)
         best_dev, best_test = trainer.train(n_epochs=40, freq_eval=300)
