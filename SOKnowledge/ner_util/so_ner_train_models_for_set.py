@@ -7,7 +7,10 @@ from train import NERTaggerTrainer
 if __name__ == "__main__":
 
     set_num = sys.argv[1]
-    for i in range(0, 10):
+    start_subset=sys.argv[2]
+    end_subset=sys.argv[3]
+
+    for i in range(start_subset, end_subset):
         trainer = NERTaggerTrainer()
         train_set_location = "corpus/so_ner/dataSet{0}/{1}/S{2}train{3}.conll".format(set_num, i, set_num, i)
         dev_set_location = "corpus/so_ner/dataSet{0}/{1}/S{2}dev{3}.conll".format(set_num, i, set_num, i)
