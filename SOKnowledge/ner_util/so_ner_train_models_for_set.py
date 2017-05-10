@@ -7,8 +7,8 @@ from train import NERTaggerTrainer
 if __name__ == "__main__":
 
     set_num = sys.argv[1]
-    start_subset=sys.argv[2]
-    end_subset=sys.argv[3]
+    start_subset=int(sys.argv[2])
+    end_subset=int(sys.argv[3])
 
     for i in range(start_subset, end_subset):
         trainer = NERTaggerTrainer()
