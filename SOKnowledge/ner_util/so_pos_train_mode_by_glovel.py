@@ -19,7 +19,7 @@ if __name__ == "__main__":
                                   dev_set_location=dev_set_location,
                                   test_set_location=test_set_location,
                                   pre_emb=pre_emb,
-                                  word_dim=50
+                                  word_dim=100
                                   )
     trainer.init_model(model_name)
     best_dev, best_test = trainer.train(n_epochs=100, freq_eval=100)

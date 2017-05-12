@@ -7,7 +7,10 @@ from train import NERTaggerTrainer
 if __name__ == "__main__":
 
     set_num = sys.argv[1]
-    for i in range(0, 10):
+    start_subset = int(sys.argv[2])
+    end_subset = int(sys.argv[3])
+
+    for i in range(start_subset, end_subset):
         trainer = NERTaggerTrainer()
         train_set_location = "corpus/so_ner/dataSet{0}/{1}/S{2}train{3}.conll".format(set_num, i, set_num, i)
         dev_set_location = "corpus/so_ner/dataSet{0}/{1}/S{2}dev{3}.conll".format(set_num, i, set_num, i)
@@ -24,8 +27,7 @@ if __name__ == "__main__":
         trainer.init_model_parameters(train_set_location=train_set_location,
                                       dev_set_location=dev_set_location,
                                       test_set_location=test_set_location,
-                                      pre_emb=pre_emb,
-                                      word_dim=50
+                                      pre_emb=pre_emb
                                       )
         trainer.init_model(model_name)
         best_dev, best_test = trainer.train(n_epochs=40, freq_eval=300)
