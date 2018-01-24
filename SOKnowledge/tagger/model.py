@@ -7,7 +7,7 @@ import theano.tensor as T
 import codecs
 import cPickle
 
-from utils import shared, set_values, get_name
+from utils import shared, set_values
 from nn import HiddenLayer, EmbeddingLayer, DropoutLayer, LSTM, forward
 from optimization import Optimization
 
@@ -16,7 +16,7 @@ class Model(object):
     """
     Network architecture.
     """
-    def __init__(self, parameters=None, models_path=None, model_path=None):
+    def __init__(self, parameters=None, models_path=None, model_path=None,model_name="lstm_crf_model"):
         """
         Initialize the model. We either provide the parameters and a path where
         we store the models, or the location of a trained model.
@@ -25,7 +25,7 @@ class Model(object):
             assert parameters and models_path
             # Create a name based on the parameters
             self.parameters = parameters
-            self.name = get_name(parameters)
+            self.name = model_name
             # Model location
             model_path = os.path.join(models_path, self.name)
             self.model_path = model_path

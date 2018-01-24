@@ -1,0 +1,78 @@
+{% extends "index/base.html" %}
+{% block page_title %}Question List For Page-{{ question_post_list.number }}{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Question List</div>
+        <table class="table table-bordered">
+            <tr>
+                <td>ID</td>
+                <td>title</td>
+                <td>tags</td>
+                <td>acceptedanswerid</td>
+                <td>question_post.score</td>
+
+                <td>viewcount</td>
+                <td>answercount</td>
+                <td>creationdate</td>
+
+            </tr>
+            {% for question_post in question_post_list %}
+                {% with index=forloop.counter0|add:-1 %}
+                    {% if annotator_type == 1 %}
+                        <tr class='clickable-row'
+                            data-href={% url 'annotator:ner_annotator_question' index|add:question_post_list.start_index %}>
+                    {% endif %}
+                {% if annotator_type == 2 %}
+                    <tr class='clickable-row'
+                        data-href={% url 'annotator:sentences_annotator_question' index|add:question_post_list.start_index %}>
+                {% endif %}
+
+
+                <td>{{ question_post.id }}</td>
+                <td>{{ question_post.title }}</td>
+                <td>{{ question_post.tags }}</td>
+                <td>{{ question_post.acceptedanswerid }}</td>
+                <td>{{ question_post.score }}</td>
+
+                <td>{{ question_post.viewcount }}</td>
+                <td>{{ question_post.answercount }}</td>
+                <td>{{ question_post.creationdate }}</td>
+
+
+                </tr>
+                {% endwith %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="pagination">
+        <ul class="pager">
+            {% if question_post_list.has_previous %}
+                <li>
+                    <a href={% url 'annotator:listing_question_for_annotator' question_post_list.previous_page_number annotator_type %}>previous</a>
+                </li>
+            {% endif %}
+
+            <li class="current">
+                Page {{ question_post_list.number }} of {{ question_post_list.paginator.num_pages }}.
+            </li>
+
+            {% if question_post_list.has_next %}
+                <li>
+                    <a href={% url 'annotator:listing_question_for_annotator' question_post_list.next_page_number annotator_type %}>next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".clickable-row").click(function () {
+                console.log("click");
+                window.location = $(this).data("href");
+            });
+        })
+    </script>
+{% endblock %}

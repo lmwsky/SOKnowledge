@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
 
-from SOKnowledge.data_processor.scripts.finish.db_util import get_max_id
+from SOKnowledge.data_processor.scripts.db_util import get_max_id
 
 
 class TestGetMaxId(TestCase):

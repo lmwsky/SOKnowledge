@@ -1,0 +1,70 @@
+{% extends "index/base.html" %}
+{% block page_title %}Answer List For Page-{{ answer_post_list.number }}{% endblock %}
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Answer List</div>
+        <table class="table table-bordered">
+            <tr>
+                <td>ID</td>
+                <td>score</td>
+                <td>creationdate</td>
+                <td>accepted</td>
+            </tr>
+            {% for answer_post in answer_post_list %}
+                {% with index=forloop.counter0|add:-1 %}
+                    {% if annotator_type == 1 %}
+                        <tr class='clickable-row'
+                            data-href={% url 'annotator:ner_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                    {% endif %}
+                {% if annotator_type == 2 %}
+                    <tr class='clickable-row'
+                        data-href={% url 'annotator:sentences_annotator_answer' question_index index|add:answer_post_list.start_index %}>
+                {% endif %}
+
+                    <td>{{ answer_post.id }}</td>
+                    <td>{{ answer_post.score }}</td>
+                    <td>{{ answer_post.creationdate }}</td>
+                    
+                    {% if answer_post.id == accepted_id %}
+                        <td>True</td>
+                    {% else %}
+                        <td></td>
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="pagination">
+        <ul class="pager">
+            {% if answer_post_list.has_previous %}
+                <li>
+                    <a href={% url 'annotator:listing_answer_for_question_for_annotator' question_index answer_post_list.previous_page_number annotator_type %}>previous</a>
+                </li>
+            {% endif %}
+
+            <li class="current">
+                Page {{ answer_post_list.number }} of {{ answer_post_list.paginator.num_pages }}.
+            </li>
+
+            {% if answer_post_list.has_next %}
+                <li>
+                    <a href={% url 'annotator:listing_answer_for_question_for_annotator' question_index answer_post_list.next_page_number annotator_type %}>next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".clickable-row").click(function () {
+                console.log("click");
+                window.location = $(this).data("href");
+            });
+        })
+    </script>
+{% endblock %}

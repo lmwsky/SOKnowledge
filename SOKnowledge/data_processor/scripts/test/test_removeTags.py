@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
 
-from SOKnowledge.data_processor.scripts.finish.text_processor import remove_tags
+from SOKnowledge.data_processor.scripts.text_processor import remove_tags
 
 
 class TestRemoveTags(TestCase):

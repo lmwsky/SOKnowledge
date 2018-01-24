@@ -1,0 +1,138 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block page_title %}Annotation for NER {% endblock %}
+{% block local_css %}
+    <link rel="stylesheet" href="{% static 'annotator/texttagger.css' %}"/>
+    <link rel="stylesheet" href="{% static 'annotator/my_style.css' %}"/>
+{% endblock %}
+{% block local_js %}
+    <script src="{% static 'annotator/texttagger.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="page-header">
+            {% if post_type == 1 %}
+
+                <h2>Annotation Question
+                    <small>{{ postId }}</small>
+                </h2>
+            {% endif %}
+            {% if post_type == 2 %}
+
+                <h2>Annotation Answer
+                    <small>{{ postId }}</small>
+                </h2>
+            {% endif %}
+        </div>
+        <div id="tagdescriptions">
+            <h3>Labels</h3>
+            {% for label in labels %}
+                <h4>
+                    <span class="label label-default {{ label.value }} tagged">{{ label.textLabel }}</span>
+                    <span>{{ label.description }}</span>
+                </h4>
+            {% endfor %}
+        </div>
+        {% for code_block in code_block_list %}
+            <div>
+                <label>{{ code_block.code_block_name }}</label>
+                <pre>{{ code_block.code_block }}</pre>
+            </div>
+        {% endfor %}
+        <div>
+            <h3>please tag text below</h3>
+        </div>
+        <div>
+            <pre id="needed_tag_text">{{ text }}</pre>
+        </div>
+
+        <div>
+            <h3>tagged text output</h3>
+        </div>
+        <div>
+            {% if post_type == 1 %}
+                <form role="form" method="POST" action={% url 'annotator:ner_annotator_question' question_index %}>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-primary  my-margin"/>
+                </form>
+            {% endif %}
+            {% if post_type == 2 %}
+                <form role="form" method="POST"
+                      action={% url 'annotator:ner_annotator_answer' question_index answer_index %}>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" class="btn btn-primary my-margin"/>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <a class="btn btn-default saveclass" role="button"
+               href={% url 'annotator:listing_question_for_annotator' 1 1 %}
+            >Show All Questions</a>
+
+            <a class="btn btn-default saveclass" role="button"
+               href={% url 'annotator:listing_answer_for_question_for_annotator' question_index 1 1 %}
+            >Show All Answers</a>
+
+            <div class="btn-group" role="group" aria-label="Next and previous">
+                {% if question_index > 0 %}
+                    <a class="btn btn-default saveclass" role="button"
+                       href={% url 'annotator:ner_annotator_question' question_index|add:-1 %}><span
+                            class="glyphicon glyphicon-chevron-left"
+                            aria-hidden="true"></span>Previous Question</a>
+                {% endif %}
+
+                <a class="btn btn-default saveclass" role="button"
+                   href={% url 'annotator:ner_annotator_question' question_index|add:1 %}
+                >Next Question<span
+                        class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+                ></span></a>
+
+                {% if answer_index < 0 %}
+                    <a class="btn btn-default saveclass" role="button"
+                       href={% url 'annotator:ner_annotator_answer' question_index 0 %}
+                    >Show First Answer<span
+                            class="glyphicon glyphicon-play" aria-hidden="true"
+                    ></span></a>
+                {% endif %}
+                {% if answer_index > 0 %}
+                    <a class="btn btn-default saveclass" role="button"
+                       href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:-1 %}><span
+                            class="glyphicon glyphicon-chevron-left"
+                            aria-hidden="true"></span>Previous Answer</a>
+                {% endif %}
+                {% if answer_index >= 0 %}
+                    <a class="btn btn-default saveclass" role="button"
+                       href={% url 'annotator:ner_annotator_answer' question_index answer_index|add:1 %}
+                    >Next Answer<span
+                            class=" glyphicon glyphicon-chevron-right" aria-hidden="true"
+                    ></span></a>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(function () {
+                not_tagged_text = $("#needed_tag_text").text();
+                $("#needed_tag_text").text("");
+                var textTagger = $("#needed_tag_text").textTagger(not_tagged_text, {{labels_data_for_js|safe}},
+                        function (userTaggedResult) {
+                            $("#tagged_text").text(userTaggedResult.nlpText);
+                            console.log(userTaggedResult);
+                        })
+
+            })
+        })
+    </script>
+{% endblock %}
+
