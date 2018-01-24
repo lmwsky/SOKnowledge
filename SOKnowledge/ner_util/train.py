@@ -395,6 +395,7 @@ class NERTaggerTrainer(object):
                         best_test = test_score
                         print "New best score on test."
             print "Epoch %i done. Average cost: %f" % (epoch, np.mean(epoch_costs))
+        return best_dev,best_test
 
 
 if __name__ == "__main__":
